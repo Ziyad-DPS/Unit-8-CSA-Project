@@ -20,6 +20,9 @@ public class Main {
         
         // Exit on close
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        GuiHandler gui = new GuiHandler(frame);
+        gui.startScreen();
     
     }
 }
