@@ -1,5 +1,4 @@
 BACKLOG:
-- [ ] start screen
 - [ ] rocket ship launch
 - [ ] rocket physics
 - [ ] space conditions
@@ -7,10 +6,10 @@ BACKLOG:
 - [ ] currency(SpaceBucks)
 - [ ] upgrades
 - [ ] sea for when you fail
-- [ ] reaching the moon
+- [ ] reaching the moon/win screen
 
 IN PROGRESS:
-- [ ]
+- [ ] start screen
 
 DONE:
 - [ ]
