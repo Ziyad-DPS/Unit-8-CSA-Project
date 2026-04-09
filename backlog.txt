@@ -1,4 +1,5 @@
 BACKLOG:
+- [ ] simple animations
 - [ ] rocket physics
 - [ ] space conditions
 - [ ] currency(SpaceBucks)
@@ -10,6 +11,7 @@ BACKLOG:
 IN PROGRESS:
 - [ ] start screen
 - [ ] rocket models, backgrounds, moon model
+- [ ] game loop
 
 DONE:
 - [ ]
