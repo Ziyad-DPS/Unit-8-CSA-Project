@@ -6,13 +6,18 @@ import javax.swing.*;
 public class GuiHandler {
     
     private final JFrame frame;
+    private String uiState;
 
     public GuiHandler(JFrame frame) {
         // Game frame to edit
         this.frame = frame;
+        this.uiState = "startScreen";
     }
 
     public void startScreen() {
+        if (!uiState.equals("startScreen")) {
+            return;
+        }
         // Background: will be implemented soon
         
         // Start button
@@ -20,17 +25,15 @@ public class GuiHandler {
         // When we add a GuiHandler to the Player constructor in the mouseClicked function
         // it is in a new object (MouseAdapter) so we save this GuiHandler and pass it in to avoid
         // an error
-        GuiHandler gui = this;
 
         // startButton action to initalize the game
         startButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Create a Player object 
-                Player player = new Player(gui);
+                uiState = "playableGame";
                 frame.getContentPane().removeAll();
                 frame.repaint();
-                System.out.println("hello");
             }   
         });
 

@@ -4,7 +4,7 @@ import javax.swing.*;
 public class Main {
 
     // Main driver method
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         
         // Creating instance of JFrame
         JFrame frame = new JFrame("CSA Unit 8 Project");
@@ -22,7 +22,17 @@ public class Main {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         GuiHandler gui = new GuiHandler(frame);
+        Player player = new Player(gui);
         gui.startScreen();
+        int i = 0;
+        
+        // Game loop
+        // https://gameprogrammingpatterns.com/game-loop.html link for a game loop introduction
+        while (true) {
+            frame.repaint();
+            Thread.sleep(1/60);
+            i++;
+        }
     
     }
 }
