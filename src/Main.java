@@ -23,6 +23,5 @@ public class Main {
 
         GuiHandler gui = new GuiHandler(frame);
         gui.startScreen();
-    
     }
 }
