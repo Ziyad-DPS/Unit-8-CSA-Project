@@ -6,19 +6,19 @@ public class Main {
         // Creating instance of a JFrame and a JPanel
         JFrame frame = new JFrame("CSA Unit 8 Project");
         
-        // the GuiHandler extends JPanel so add set GuiHandler as the contentPane
-        GuiHandler guiHandler = new GuiHandler();
-        frame.setContentPane(guiHandler);
-
+        // Make the JFrame windowed fullscreen
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        
         // making the frame visible
         frame.setVisible(true);
         
         // Exit on close
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // Make the JFrame windowed fullscreen
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-
+        // the GuiHandler extends JPanel so add set GuiHandler as the contentPane
+        GuiHandler guiHandler = new GuiHandler(frame);
+        frame.setContentPane(guiHandler);
+        
         // Create a new thread to run in parallel with the main gameloop
         Thread guiThread = new Thread(guiHandler);
         guiThread.start();

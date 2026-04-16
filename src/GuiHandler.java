@@ -4,19 +4,16 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class GuiHandler extends JPanel implements Runnable {
-    
+
     private final int PANEL_WIDTH, PANEL_HEIGHT;
     private String uiState;
 
-    public GuiHandler() {
+    public GuiHandler(JFrame frame) {
         super();
         // Game panel to edit game UI
-        this.PANEL_WIDTH = getSize().width;
-        this.PANEL_HEIGHT = getSize().height;
+        this.PANEL_WIDTH = (int) frame.getSize().getWidth();
+        this.PANEL_HEIGHT = (int) frame.getSize().getHeight();
         this.uiState = "startScreen";
-        System.out.print(PANEL_HEIGHT);
-        System.out.print(" ");
-        System.out.print(PANEL_WIDTH);
     }
 
     @Override
@@ -57,7 +54,7 @@ public class GuiHandler extends JPanel implements Runnable {
         startButton.setFont(new Font("Arial", Font.BOLD, 64));
         // Positioning of the button being centered horizantaly and going in the bottom
         int centerX = (PANEL_WIDTH / 2) - 780 / 2;
-        int centerY = PANEL_HEIGHT / 2;
+        int centerY = (PANEL_HEIGHT / 2) - 300 / 2;
         startButton.setBounds(centerX, centerY, 780, 300);
         add(startButton);
         uiState = "rendered";

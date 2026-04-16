@@ -1,25 +1,21 @@
 public class Player {
-    // SET TO CHANGE!
-    // Basic class for the player storing their games data and handling all of their inputs
+    // Basic class for the player storing their games data
 
-    private final GuiHandler guiHandler;
-    private final Rocket rocket;
     private int spaceBucks;
-    private int durabilityPrice=100;
-    private int powerPrice=100;
-    private int fuelCapacityPrice=100;
-    private int durLevel=1;
-    private int powLevel=1;
-    private int fuelLevel=1;
+    private int durabilityPrice;
+    private int powerPrice;
+    private int fuelCapacityPrice;
+    private int durLevel;
+    private int powLevel;
+    private int fuelLevel;
 
-    public Player(GuiHandler guiHandler) {
-        /*
-            When the state of the player changes
-            we need the GuiHandler to be able to render
-            what the player wants
-        */
-        this.guiHandler = guiHandler;
-        this.rocket = new Rocket();
+    public Player() {
+        this.durabilityPrice = 100;
+        this.powerPrice = 100;
+        this.fuelCapacityPrice = 100;
+        this.durLevel = 1;
+        this.powLevel = 1;
+        this.fuelLevel = 1;
     }
 
     public void setBucks(int newAmnt){

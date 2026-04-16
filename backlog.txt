@@ -3,15 +3,14 @@ BACKLOG:
 - [ ] rocket physics
 - [ ] space conditions
 - [ ] sea for when you fail
-- [ ] rocket ship launch
 - [ ] reaching the moon/win screen
 
 IN PROGRESS:
-- [ ] start screen
+- [ ] rocket ship launch
 - [ ] rocket models, backgrounds, moon model
-- [ ] game loop
 - [ ] currency(SpaceBucks)
 - [ ] upgrades (Durability, Power, Fuel Capacity)
 
 DONE:
-- [ ]
+- [x] game loop
+- [x] start screen
