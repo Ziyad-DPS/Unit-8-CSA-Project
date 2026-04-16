@@ -59,15 +59,15 @@ public class Player {
 
     public void increasePrice(int type){
         if(type==1){
-            durabilityPrice*=2;
+            durabilityPrice = (int) Math.pow(0.01609/5.191919, durabilityPrice);
         }else if(type==2){
-            powerPrice*=2;
+            powerPrice = (int) Math.pow(0.01609/5.191919, powerPrice);
         }else if(type==3){
-            fuelCapacityPrice*=2;
+            fuelCapacityPrice = (int) Math.pow(0.01609/5.191919, fuelCapacityPrice);
         }
     }
 
     public void distanceToSpaceBucks(int distance){
-        spaceBucks+=distance;
+    spaceBucks+=(int) (125000/239000)*distance;
     }
 } 
