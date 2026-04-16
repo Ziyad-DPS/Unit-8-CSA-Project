@@ -8,7 +8,9 @@ public class Player {
     private int durabilityPrice=100;
     private int powerPrice=100;
     private int fuelCapacityPrice=100;
-
+    private int durLevel=1;
+    private int powLevel=1;
+    private int fuelLevel=1;
 
     public Player(GuiHandler guiHandler) {
         /*
@@ -31,6 +33,25 @@ public class Player {
     public boolean buyDur(){
         if(spaceBucks>=durabilityPrice){
             increasePrice(1);
+            durLevel++;
+            return true;
+        }
+            return false;
+    }
+
+    public boolean buyPow(){
+        if(spaceBucks>=powerPrice){
+            increasePrice(2);
+            powLevel++;
+            return true;
+        }
+            return false;
+    }
+
+    public boolean buyFuel(){
+        if(spaceBucks>=fuelCapacityPrice){
+            increasePrice(3);
+            fuelLevel++;
             return true;
         }
             return false;
@@ -38,11 +59,15 @@ public class Player {
 
     public void increasePrice(int type){
         if(type==1){
-            durabilityPrice*=1.5;
+            durabilityPrice*=2;
         }else if(type==2){
-            powerPrice*=1.5;
+            powerPrice*=2;
         }else if(type==3){
-            fuelCapacityPrice*=1.5;
+            fuelCapacityPrice*=2;
         }
+    }
+
+    public void distanceToSpaceBucks(int distance){
+        spaceBucks+=distance;
     }
 } 
