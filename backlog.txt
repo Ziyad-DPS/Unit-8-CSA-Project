@@ -12,5 +12,6 @@ IN PROGRESS:
 - [ ] game loop
 - [ ] currency(SpaceBucks)
 - [ ] upgrades (Durability, Power, Fuel Capacity)
+
 DONE:
 - [ ]

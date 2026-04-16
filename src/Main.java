@@ -1,17 +1,15 @@
 import javax.swing.*;
 
-// Main class
+// Main class that runs the program
 public class Main {
-
-    // Main driver method
     public static void main(String[] args) throws InterruptedException {
-        
-        // Creating instance of JFrame
+        // Creating instance of a JFrame and a JPanel
         JFrame frame = new JFrame("CSA Unit 8 Project");
-
-        // using no layout managers
-        frame.setLayout(null);
         
+        // the GuiHandler extends JPanel so add set GuiHandler as the contentPane
+        GuiHandler guiHandler = new GuiHandler();
+        frame.setContentPane(guiHandler);
+
         // making the frame visible
         frame.setVisible(true);
         
@@ -21,18 +19,12 @@ public class Main {
         // Make the JFrame windowed fullscreen
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        GuiHandler gui = new GuiHandler(frame);
-        Player player = new Player(gui);
-        gui.startScreen();
-        int i = 0;
-        
-        // Game loop
-        // https://gameprogrammingpatterns.com/game-loop.html link for a game loop introduction
+        // Create a new thread to run in parallel with the main gameloop
+        Thread guiThread = new Thread(guiHandler);
+        guiThread.start();
+
         while (true) {
-            frame.repaint();
-            Thread.sleep(1/60);
-            i++;
+            Thread.sleep(1000/60);
         }
-    
     }
 }

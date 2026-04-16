@@ -18,14 +18,7 @@ public class Player {
         */
         this.guiHandler = guiHandler;
         this.rocket = new Rocket();
-        beginGame();
     }
-
-    private void beginGame() {
-        // Render the game so you can play
-        guiHandler.renderPlayableGame();
-    }
-
 
     public void setBucks(int newAmnt){
         spaceBucks=newAmnt;
