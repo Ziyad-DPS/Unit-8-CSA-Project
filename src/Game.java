@@ -2,7 +2,7 @@ import java.awt.*;
 import java.lang.*;
 import javax.swing.*;
 
-public class Game extends JPanel {
+public class Game extends JLayeredPane {
     
     /*
     Game handles rendering pictures (rocket, background, etc) and gamestate
@@ -16,8 +16,7 @@ public class Game extends JPanel {
     private Ball ball;
 
     public Game(GuiHandler guiHandler) {
-        super(null);
-
+        // https://www.geeksforgeeks.org/java/java-jlayeredpane/ link to learn about JLayeredPane
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         this.guiHandler = guiHandler;
@@ -26,14 +25,17 @@ public class Game extends JPanel {
         this.PANEL_WIDTH = (int) screenSize.getWidth();
         this.PANEL_HEIGHT = (int) screenSize.getHeight();
         this.ball = new Ball();
+
+        guiHandler.setBounds(0, 0, (int) screenSize.getWidth(), (int) screenSize.getHeight());
+        add(guiHandler, JLayeredPane.DEFAULT_LAYER);
         setPreferredSize(screenSize);
     }
 
     public void initGame() throws InterruptedException {
         boolean running = true;
         while (running) {
-            ball.moveBall();
             repaint();
+            ball.moveBall();
             Thread.sleep(16);
         }
     }
@@ -41,14 +43,14 @@ public class Game extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        
         Toolkit.getDefaultToolkit().sync();
-
+        
         Dimension ss = Toolkit.getDefaultToolkit().getScreenSize();
         
         g.setColor(Color.RED);
         ball.render(g);
-
+        rocket.render(g);
     }
 
     private class Ball {

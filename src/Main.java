@@ -8,6 +8,9 @@ public class Main {
         
         // the GuiHandler extends JPanel so add set GuiHandler as the contentPane
         GuiHandler guiHandler = new GuiHandler();
+        Game game = new Game(guiHandler);
+
+        frame.add(game);
         
         // Create a new thread to run in parallel with the main gameloop
         Thread guiThread = new Thread(guiHandler);
@@ -16,11 +19,6 @@ public class Main {
         // Exit on close
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        Game game = new Game(guiHandler);
-
-        frame.setContentPane(game);
-        frame.add(guiHandler);
-
         // making the frame visible
         frame.setVisible(true);
         // Make the JFrame windowed fullscreen

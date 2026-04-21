@@ -2,7 +2,6 @@ BACKLOG:
 - [ ] simple animations
 - [ ] rocket physics
 - [ ] space conditions
-- [ ] sea for when you fail
 - [ ] reaching the moon/win screen
 
 IN PROGRESS:
