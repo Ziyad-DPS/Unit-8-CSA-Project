@@ -8,6 +8,8 @@ public class Player {
     private int durLevel;
     private int powLevel;
     private int fuelLevel;
+    private int[] distance = {500, 1500, 5000, 12000, 25000, 50000, 90000, 140000, 195000, 239000};
+
 
     public Player() {
         this.durabilityPrice = 100;
@@ -18,21 +20,15 @@ public class Player {
         this.fuelLevel = 1;
     }
 
-    public void setBucks(int newAmnt){
-        spaceBucks=newAmnt;
-    }
-
-    public int getBucks(){
-        return spaceBucks;
-    }
 
     public boolean buyDur(){
         if(spaceBucks>=durabilityPrice){
             increasePrice(1);
             durLevel++;
             return true;
-        }
+        }else{
             return false;
+        }
     }
 
     public boolean buyPow(){
@@ -40,8 +36,9 @@ public class Player {
             increasePrice(2);
             powLevel++;
             return true;
-        }
+        }else{
             return false;
+        }  
     }
 
     public boolean buyFuel(){
@@ -49,21 +46,34 @@ public class Player {
             increasePrice(3);
             fuelLevel++;
             return true;
-        }
+        }else{
             return false;
+        }
     }
 
     public void increasePrice(int type){
         if(type==1){
-            durabilityPrice = (int) Math.pow(0.01609/5.191919, durabilityPrice);
+            durabilityPrice *= 1.5;
         }else if(type==2){
-            powerPrice = (int) Math.pow(0.01609/5.191919, powerPrice);
+            powerPrice *= 1.5;
         }else if(type==3){
-            fuelCapacityPrice = (int) Math.pow(0.01609/5.191919, fuelCapacityPrice);
+            fuelCapacityPrice *= 1.5;
+        }
+    }
+
+    public int getDistance(){
+        if(powLevel<fuelLevel&&powLevel<durLevel){
+            return distance[powLevel];
+        }else if(fuelLevel<powLevel&&fuelLevel<durLevel){
+        return distance[fuelLevel];
+        }else if(durLevel<powLevel&&durLevel<fuelLevel){
+            return distance[durLevel];
+        }else{
+            return -1;
         }
     }
 
     public void distanceToSpaceBucks(int distance){
-    spaceBucks+=(int) (125000/239000)*distance;
+    spaceBucks  += (int) (125000/239000)*(2*distance);
     }
 } 
