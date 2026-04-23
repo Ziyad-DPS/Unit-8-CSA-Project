@@ -17,7 +17,7 @@ public class Game extends JLayeredPane implements KeyListener {
     private Rocket rocket;
     private Ball ball;
 
-    private boolean keyHeldDown;
+    private boolean keyHeldDown, started;
     
     public Game(GuiHandler guiHandler) {
         // https://www.geeksforgeeks.org/java/java-jlayeredpane/ link to learn about JLayeredPane
@@ -31,7 +31,10 @@ public class Game extends JLayeredPane implements KeyListener {
         this.rocket = new Rocket(player);
         this.ball = new Ball();
 
+        guiHandler.setRocket(rocket);
+
         this.keyHeldDown = false;
+        this.started = false;
 
         addKeyListener(this);
 
@@ -52,6 +55,7 @@ public class Game extends JLayeredPane implements KeyListener {
             isPaused = guiHandler.handlePause();
             setFocusable(true);
             repaint();
+
             Thread.sleep(16);
         }
     }
@@ -60,19 +64,24 @@ public class Game extends JLayeredPane implements KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        Toolkit.getDefaultToolkit().sync();
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        toolkit.sync();
+
+        int offsetY = rocket.getY() - (int) toolkit.getScreenSize().getHeight() / 2;
         
         g.setColor(Color.RED);
-        ball.render(g);
+        ball.render(g, rocket.getX(), offsetY);
         rocket.render(g);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (keyHeldDown) { return; }
+        if (started) { return; }
 
         rocket.setUpVelocity();
         keyHeldDown = true;
+        started = true;
     }
 
     @Override
@@ -103,8 +112,8 @@ public class Game extends JLayeredPane implements KeyListener {
             y += yV;
         }
 
-        public void render(Graphics g) {
-            g.fillOval(x, y, 30, 30);
+        public void render(Graphics g, int rocketX, int rocketY) {
+            g.fillOval(x - rocketX, y - rocketY, 30, 30);
         }
 
         private void borderCheck() {

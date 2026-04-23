@@ -5,10 +5,11 @@ BACKLOG:
 
 IN PROGRESS:
 - [ ] rocket models, backgrounds, moon model
-- [ ] currency(SpaceBucks)
 - [ ] upgrades (Durability, Power, Fuel Capacity)
 
 DONE:
+- [x] camera
+- [x] currency(SpaceBucks)
 - [x] rocket physics
 - [x] rocket ship launch
 - [x] game loop

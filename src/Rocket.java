@@ -3,6 +3,7 @@ import java.awt.*;
 public class Rocket {
     
     private double x, y, xVelocity, yVelocity, feulCapacity;
+    private int DISTANCE_TO_MOON;
     private Player player;
 
     public Rocket(Player player) {
@@ -10,8 +11,9 @@ public class Rocket {
         this.y = 1000;
         this.xVelocity = 0;
         this.yVelocity = 0;
+        this.DISTANCE_TO_MOON = 20000;
         this.feulCapacity = 0;
-        this.player = player;   
+        this.player = player;
     }
 
     public void update() {
@@ -33,7 +35,7 @@ public class Rocket {
         
         g.fillRect(
             (int) screenSize.getWidth() / 2,
-            (int) y,
+            700,
             60,
             130
         );
@@ -44,13 +46,25 @@ public class Rocket {
             y = Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2 + 130;
         } 
         else if (yVelocity < 40) {
-            yVelocity += 1.5;
+            yVelocity += 4;
         }
     }
 
     public void setUpVelocity() {
         int[] feulCapacityValues = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
         feulCapacity = feulCapacityValues[player.getFeulLevel() - 1];
+    }
+
+    public int getDistance() {
+        return (int) y;
+    }
+
+    public int getX() {
+        return (int) x;
+    }
+
+    public int getY() {
+        return (int) y;
     }
 
 }
