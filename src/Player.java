@@ -76,4 +76,8 @@ public class Player {
     public void distanceToSpaceBucks(int distance){
     spaceBucks  += (int) (125000/239000)*(2*distance);
     }
+
+    public int getFeulLevel() {
+        return fuelLevel;
+    }
 } 

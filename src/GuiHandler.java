@@ -3,26 +3,23 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.*;
-import java.io.IOException;
-import java.awt.Image;
-import javax.imageio.ImageIO;
 import javax.swing.*;
-
-import org.w3c.dom.events.MouseEvent;
 
 public class GuiHandler extends JPanel implements Runnable {
 
     private final int PANEL_WIDTH, PANEL_HEIGHT;
     private String uiState;
+    private boolean uiPaused;
 
     public GuiHandler() {
         super(null);
         // Game panel to edit game UI
-        // Get screen size from Toolkit
+        // Get screen size from Toolkit\
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.PANEL_WIDTH = (int) screenSize.getWidth();
         this.PANEL_HEIGHT = (int) screenSize.getHeight();
         this.uiState = "startScreen";
+        this.uiPaused = true;
         setPreferredSize(screenSize);
     }
 
@@ -57,6 +54,7 @@ public class GuiHandler extends JPanel implements Runnable {
             public void mouseClicked(MouseEvent e) {
                 // Create a Player object 
                 uiState = "playableGame";
+                uiPaused = false;
                 removeAll();
             }   
         });
@@ -68,6 +66,7 @@ public class GuiHandler extends JPanel implements Runnable {
         startButton.setBounds(PANEL_WIDTH / 2 - 250, PANEL_HEIGHT / 2 - 30, 500, 60);
         add(startButton);
         uiState = "rendered";
+        uiPaused = true;
     }
     
     public void renderPlayableGame() {
@@ -79,5 +78,9 @@ public class GuiHandler extends JPanel implements Runnable {
         butt.setBounds(PANEL_WIDTH - 700, PANEL_HEIGHT / 2, 70, 30);
         add(butt);
         uiState = "rendered";
+    }
+
+    public boolean handlePause() {
+        return uiPaused;
     }
 }
