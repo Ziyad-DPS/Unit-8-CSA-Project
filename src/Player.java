@@ -86,11 +86,16 @@ public class Player {
 
     //increases spacebucks based on the distance the player travels
     public void distanceToSpaceBucks(int distance){
-    spaceBucks  += (int) (125000/239000)*(2*distance);
+        System.out.println(distance);
+        spaceBucks += (int) (125000.0/239000.0)*(2*distance);
     }
 
     //returns fuel level
-    public int getFeulLevel() {
+    public int getFuelLevel() {
         return fuelLevel;
+    }
+
+    public int getSpaceBucks() {
+        return spaceBucks;
     }
 } 

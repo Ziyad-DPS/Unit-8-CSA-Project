@@ -70,18 +70,17 @@ public class Game extends JLayeredPane implements KeyListener {
         int offsetY = rocket.getY() - (int) toolkit.getScreenSize().getHeight() / 2;
         
         g.setColor(Color.RED);
+        g.fillRect(0, -1300 - offsetY, (int) toolkit.getScreenSize().getWidth(), 240);
         ball.render(g, rocket.getX(), offsetY);
         rocket.render(g);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (keyHeldDown) { return; }
-        if (started) { return; }
+        if (keyHeldDown || started) { return; }
 
         rocket.setUpVelocity();
         keyHeldDown = true;
-        started = true;
     }
 
     @Override

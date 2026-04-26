@@ -1,13 +1,9 @@
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.*;
-import javax.imageio.*;
-import java.io.File;
-import java.io.IOException;
-
 import javax.swing.*;
 
 public class GuiHandler extends JPanel implements Runnable {
@@ -82,17 +78,21 @@ public class GuiHandler extends JPanel implements Runnable {
             return;
         }
 
-        JButton butt = new JButton("Butt");
-        butt.setBounds(PANEL_WIDTH - 700, PANEL_HEIGHT / 2, 70, 30);
-        add(butt);
+        JLabel label = new JLabel(rocket.getDistance() + "");
+        label.setBounds(1000, 0, 2000, 300);
+        label.setFont(new Font("Arial", Font.BOLD, 64));
+        add(label);
         uiState = "rendered";
     }
 
     public void displayDistance() {
-        JLabel label = new JLabel(rocket.getDistance() * 20000 + "");
-        label.setBounds(100, 0, 200, 300);
-        label.setFont(new Font("Arial", Font.BOLD, 64));
-        add(label);
+        for (Component c : getComponents()) {
+            if (c instanceof JLabel ) {
+                JLabel d = (JLabel) c;
+                d.setText(rocket.getDistance() + "");
+            }
+        }
+
     }
 
     public boolean handlePause() {
