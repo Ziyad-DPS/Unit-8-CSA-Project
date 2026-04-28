@@ -1,4 +1,12 @@
 import java.awt.*;
+import java.awt.image.ImageObserver;
+import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+import java.io.File;
+import java.io.IOException;
 
 public class Rocket {
     
@@ -47,16 +55,20 @@ public class Rocket {
     
     public void render(Graphics g) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        
-        if (rocketFalling()) {
-            g.fillRect(0, 0, (int) screenSize.getWidth(), (int) screenSize.getHeight());
+
+        try {
+            BufferedImage bufferedImage = ImageIO.read(new File("./resources/rocketship.png"));    
+            g.drawImage(
+                bufferedImage,
+                (int) screenSize.getWidth() / 2,
+                (int) screenSize.getHeight() / 2 - 300, 
+                100,
+                100,
+                null
+            );
+        } catch (IOException error) {
+            System.err.println(error);
         }
-        g.fillRect(
-            (int) screenSize.getWidth() / 2,
-            (int) screenSize.getHeight() - 300,
-            60,
-            130
-        );
     }
 
     private boolean rocketFalling() {
