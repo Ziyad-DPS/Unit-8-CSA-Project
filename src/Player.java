@@ -95,6 +95,7 @@ public class Player {
         return fuelLevel;
     }
 
+    //returns space bucks
     public int getSpaceBucks() {
         return spaceBucks;
     }
