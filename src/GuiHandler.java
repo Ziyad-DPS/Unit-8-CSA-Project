@@ -66,7 +66,7 @@ public class GuiHandler extends JPanel implements Runnable {
         // The styles of the button
         startButton.setBackground(new Color(0, 146, 242));
         startButton.setFont(new Font("Arial", Font.BOLD, 64));
-        // Positioning of the button being centered horizantaly and going in the bottom
+        // Positioning of the button being centered horizontaly and going in the bottom
         startButton.setBounds(PANEL_WIDTH / 2 - 250, PANEL_HEIGHT / 2 - 30, 500, 60);
         add(startButton);
         uiState = "rendered";
@@ -85,6 +85,13 @@ public class GuiHandler extends JPanel implements Runnable {
         uiState = "rendered";
     }
 
+    public void upgradeScreen(){
+        if(!uiState.equals("upgradeScreen")){
+            return;
+        }
+        
+    }
+    
     public void displayDistance() {
         for (Component c : getComponents()) {
             if (c instanceof JLabel ) {
