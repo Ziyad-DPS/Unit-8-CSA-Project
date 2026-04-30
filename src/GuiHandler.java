@@ -11,7 +11,7 @@ public class GuiHandler extends JPanel implements Runnable {
     private final int PANEL_WIDTH, PANEL_HEIGHT;
     private Rocket rocket;
     private String uiState;
-    private boolean uiPaused;
+    private boolean uiPaused, started;
 
     public GuiHandler() {
         super(null);
@@ -23,6 +23,7 @@ public class GuiHandler extends JPanel implements Runnable {
         this.rocket = null;
         this.uiState = "startScreen";
         this.uiPaused = true;
+        this.started = false;
         setPreferredSize(screenSize);
     }
 
@@ -59,6 +60,7 @@ public class GuiHandler extends JPanel implements Runnable {
                 // Create a Player object 
                 uiState = "playableGame";
                 uiPaused = false;
+                started = true;
                 removeAll();
             }   
         });
@@ -66,7 +68,7 @@ public class GuiHandler extends JPanel implements Runnable {
         // The styles of the button
         startButton.setBackground(new Color(0, 146, 242));
         startButton.setFont(new Font("Arial", Font.BOLD, 64));
-        // Positioning of the button being centered horizantaly and going in the bottom
+        // Positioning of the button being centered horizontaly and going in the bottom
         startButton.setBounds(PANEL_WIDTH / 2 - 250, PANEL_HEIGHT / 2 - 30, 500, 60);
         add(startButton);
         uiState = "rendered";
@@ -85,6 +87,13 @@ public class GuiHandler extends JPanel implements Runnable {
         uiState = "rendered";
     }
 
+    public void upgradeScreen(){
+        if(!uiState.equals("upgradeScreen")){
+            return;
+        }
+        
+    }
+    
     public void displayDistance() {
         for (Component c : getComponents()) {
             if (c instanceof JLabel ) {
@@ -93,6 +102,10 @@ public class GuiHandler extends JPanel implements Runnable {
             }
         }
 
+    }
+
+    public boolean getStarted() {
+        return started;
     }
 
     public boolean handlePause() {

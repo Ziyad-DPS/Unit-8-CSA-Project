@@ -1,6 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.lang.*;
+import javax.imageio.*;
 import javax.swing.*;
 
 public class Game extends JLayeredPane implements KeyListener {
@@ -16,6 +20,7 @@ public class Game extends JLayeredPane implements KeyListener {
     private Player player;
     private Rocket rocket;
     private Ball ball;
+    private BufferedImage startscreenImage, backgroundImage;
 
     private boolean keyHeldDown, started;
     
@@ -36,9 +41,16 @@ public class Game extends JLayeredPane implements KeyListener {
         this.keyHeldDown = false;
         this.started = false;
 
+        try {
+            this.startscreenImage = ImageIO.read(new File("src/resources/start-Screen.png"));
+            this.backgroundImage = ImageIO.read(new File("src/resources/play-Screen.png"));
+        } catch (IOException error) {
+            System.err.println(error);
+        }
+
         addKeyListener(this);
 
-        guiHandler.setBounds(0, 0, (int) screenSize.getWidth(), (int) screenSize.getHeight());
+        guiHandler.setBounds(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
         add(guiHandler, JLayeredPane.DEFAULT_LAYER);
         setPreferredSize(screenSize);
     }
@@ -70,6 +82,29 @@ public class Game extends JLayeredPane implements KeyListener {
         int offsetY = rocket.getY() - (int) toolkit.getScreenSize().getHeight() / 2;
         
         g.setColor(Color.RED);
+
+        if (!guiHandler.getStarted()) {
+            drawImage(
+                g, 
+                startscreenImage,
+                0,
+                0,
+                PANEL_WIDTH, 
+                PANEL_HEIGHT
+            );
+        } else {
+            int planetOffset = -offsetY - 50;
+
+            drawImage(
+                g,
+                backgroundImage,
+                0,
+                planetOffset,
+                PANEL_WIDTH + 100,
+                PANEL_HEIGHT + 100
+            );
+        }
+
         g.fillRect(0, -1300 - offsetY, (int) toolkit.getScreenSize().getWidth(), 240);
         ball.render(g, rocket.getX(), offsetY);
         rocket.render(g);
@@ -91,6 +126,17 @@ public class Game extends JLayeredPane implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {
         return;
+    }
+
+    private void drawImage(Graphics g, BufferedImage image, int x, int y,int width, int height) {
+        g.drawImage(
+            image,
+            x,
+            y,
+            width,
+            height,
+            null
+        );
     }
 
     private class Ball {

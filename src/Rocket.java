@@ -1,4 +1,5 @@
 import java.awt.*;
+<<<<<<< HEAD
 import java.awt.image.ImageObserver;
 import java.awt.image.BufferedImage;
 
@@ -7,11 +8,19 @@ import javax.swing.*;
 
 import java.io.File;
 import java.io.IOException;
+=======
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.*;
+>>>>>>> 2dba3db8a8732576732f173e7c7e26bd58d4ff77
 
 public class Rocket {
     
     private double x, y, xVelocity, yVelocity, acceleration, fuelCapacity, power, max_fuel, lastYVelocity, lastDistance;
     private final double DISTANCE_TO_MOON, TERMINAL_VELOCITY, GRAVITY, FUEL_CONSUMPTION, GROUND;
+    private final int IMAGE_WIDTH;
+    private BufferedImage image;
     private boolean setUp;
     private Player player;
 
@@ -25,9 +34,16 @@ public class Rocket {
         this.acceleration = 0;
         this.fuelCapacity = 0;
         this.max_fuel = 0;
-        this.power = 20;
+        this.power = 17.5;
         this.setUp = false;
         this.player = player;
+
+        try {
+            File file = new File("src/resources/rocketship.png");
+            this.image = ImageIO.read(file);
+        } catch (IOException error) {
+            System.err.println(error);
+        }
         
         // Constants
         this.DISTANCE_TO_MOON = 20000;
@@ -35,6 +51,7 @@ public class Rocket {
         this.GRAVITY = 1.24;
         this.FUEL_CONSUMPTION = 0.2;
         this.GROUND = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2 + 130;
+        this.IMAGE_WIDTH = 500;
     }
     
     public void update() {
@@ -55,6 +72,7 @@ public class Rocket {
     
     public void render(Graphics g) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+<<<<<<< HEAD
 
         try {
             BufferedImage bufferedImage = ImageIO.read(new File("./resources/rocketship.png"));    
@@ -69,6 +87,17 @@ public class Rocket {
         } catch (IOException error) {
             System.err.println(error);
         }
+=======
+        
+        g.drawImage(
+            image,
+            (int) screenSize.getWidth() / 2 - (IMAGE_WIDTH / 2),
+            (int) screenSize.getHeight() - IMAGE_WIDTH - 150,
+            IMAGE_WIDTH,
+            IMAGE_WIDTH,
+            null
+        );
+>>>>>>> 2dba3db8a8732576732f173e7c7e26bd58d4ff77
     }
 
     private boolean rocketFalling() {
