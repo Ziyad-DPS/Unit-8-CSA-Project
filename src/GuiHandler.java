@@ -11,7 +11,7 @@ public class GuiHandler extends JPanel implements Runnable {
     private final int PANEL_WIDTH, PANEL_HEIGHT;
     private Rocket rocket;
     private String uiState;
-    private boolean uiPaused;
+    private boolean uiPaused, started;
 
     public GuiHandler() {
         super(null);
@@ -23,6 +23,7 @@ public class GuiHandler extends JPanel implements Runnable {
         this.rocket = null;
         this.uiState = "startScreen";
         this.uiPaused = true;
+        this.started = false;
         setPreferredSize(screenSize);
     }
 
@@ -59,6 +60,7 @@ public class GuiHandler extends JPanel implements Runnable {
                 // Create a Player object 
                 uiState = "playableGame";
                 uiPaused = false;
+                started = true;
                 removeAll();
             }   
         });
@@ -100,6 +102,10 @@ public class GuiHandler extends JPanel implements Runnable {
             }
         }
 
+    }
+
+    public boolean getStarted() {
+        return started;
     }
 
     public boolean handlePause() {
