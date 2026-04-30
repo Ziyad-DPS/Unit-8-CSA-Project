@@ -1,19 +1,10 @@
 import java.awt.*;
-<<<<<<< HEAD
-import java.awt.image.ImageObserver;
-import java.awt.image.BufferedImage;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import java.io.File;
-import java.io.IOException;
-=======
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.*;
->>>>>>> 2dba3db8a8732576732f173e7c7e26bd58d4ff77
 
 public class Rocket {
     
@@ -70,25 +61,13 @@ public class Rocket {
         fuelCapacity -= FUEL_CONSUMPTION;
     }
     
-    public void render(Graphics g) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-<<<<<<< HEAD
-
-        try {
-            BufferedImage bufferedImage = ImageIO.read(new File("./resources/rocketship.png"));    
-            g.drawImage(
-                bufferedImage,
-                (int) screenSize.getWidth() / 2,
-                (int) screenSize.getHeight() / 2 - 300, 
-                100,
-                100,
-                null
-            );
-        } catch (IOException error) {
-            System.err.println(error);
+    public void render(Graphics g, boolean gameStarted) {
+        if (!gameStarted) {
+            return;
         }
-=======
         
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
         g.drawImage(
             image,
             (int) screenSize.getWidth() / 2 - (IMAGE_WIDTH / 2),
@@ -97,7 +76,6 @@ public class Rocket {
             IMAGE_WIDTH,
             null
         );
->>>>>>> 2dba3db8a8732576732f173e7c7e26bd58d4ff77
     }
 
     private boolean rocketFalling() {

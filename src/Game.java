@@ -96,6 +96,14 @@ public class Game extends JLayeredPane implements KeyListener {
             int planetOffset = -offsetY - 50;
 
             drawImage(
+                g, 
+                backgroundImage, 
+                0, 
+                0, 
+                PANEL_WIDTH + 100, 
+                PANEL_HEIGHT + 100
+            );
+            drawImage(
                 g,
                 backgroundImage,
                 0,
@@ -107,7 +115,7 @@ public class Game extends JLayeredPane implements KeyListener {
 
         g.fillRect(0, -1300 - offsetY, (int) toolkit.getScreenSize().getWidth(), 240);
         ball.render(g, rocket.getX(), offsetY);
-        rocket.render(g);
+        rocket.render(g, guiHandler.getStarted());
     }
 
     @Override
