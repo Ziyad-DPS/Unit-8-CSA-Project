@@ -12,6 +12,7 @@ public class GuiHandler extends JPanel implements Runnable {
     private Rocket rocket;
     private String uiState;
     private boolean uiPaused, started;
+    private Player player;
 
     public GuiHandler() {
         super(null);
@@ -21,6 +22,7 @@ public class GuiHandler extends JPanel implements Runnable {
         this.PANEL_WIDTH = (int) screenSize.getWidth();
         this.PANEL_HEIGHT = (int) screenSize.getHeight();
         this.rocket = null;
+        this.player = null;
         this.uiState = "startScreen";
         this.uiPaused = true;
         this.started = false;
@@ -35,6 +37,7 @@ public class GuiHandler extends JPanel implements Runnable {
             startScreen();
             renderPlayableGame();
             displayDistance();
+            upgradeScreen();
             setOpaque(false);
 
             try {
@@ -58,7 +61,7 @@ public class GuiHandler extends JPanel implements Runnable {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Create a Player object 
-                uiState = "playableGame";
+                uiState = "upgradeScreen";
                 uiPaused = false;
                 started = true;
                 removeAll();
@@ -83,6 +86,7 @@ public class GuiHandler extends JPanel implements Runnable {
         JLabel label = new JLabel(rocket.getDistance() + "");
         label.setBounds(1000, 0, 2000, 300);
         label.setFont(new Font("Arial", Font.BOLD, 64));
+        label.setName("distanceLabel");
         add(label);
         uiState = "rendered";
     }
@@ -91,17 +95,22 @@ public class GuiHandler extends JPanel implements Runnable {
         if(!uiState.equals("upgradeScreen")){
             return;
         }
+        JLabel money = new JLabel(player.getSpaceBucks() + "");
+        money.setBounds(1400, 100, 2000, 300);
+        money.setFont(new Font("Arial", Font.BOLD, 64));
+        add(money);
         
     }
-    
+
     public void displayDistance() {
         for (Component c : getComponents()) {
-            if (c instanceof JLabel ) {
+            if (c instanceof JLabel) {
                 JLabel d = (JLabel) c;
-                d.setText(rocket.getDistance() + "");
+                if (d.getName() != null && d.getName().equals("distanceLabel")) {
+                    d.setText(rocket.getDistance() + "");
+                }
             }
         }
-
     }
 
     public boolean getStarted() {
@@ -114,5 +123,9 @@ public class GuiHandler extends JPanel implements Runnable {
 
     public void setRocket(Rocket rocket) {
         this.rocket = rocket;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

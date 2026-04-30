@@ -37,6 +37,7 @@ public class Game extends JLayeredPane implements KeyListener {
         this.ball = new Ball();
 
         guiHandler.setRocket(rocket);
+        guiHandler.setPlayer(player);
 
         this.keyHeldDown = false;
         this.started = false;
