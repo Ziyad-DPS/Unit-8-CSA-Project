@@ -13,6 +13,7 @@ public class Player {
 
 //sets variables to specific values
     public Player() {
+        this.spaceBucks = 0;
         this.durabilityPrice = 100;
         this.powerPrice = 100;
         this.fuelCapacityPrice = 100;
@@ -86,13 +87,32 @@ public class Player {
 
     //increases spacebucks based on the distance the player travels
     public void distanceToSpaceBucks(int distance){
-        System.out.println(distance);
-        spaceBucks += (int) (125000.0/239000.0)*(2*distance);
+        spaceBucks += (int) ((125000.0/239000.0)*(2*distance));
     }
 
     //returns fuel level
     public int getFuelLevel() {
         return fuelLevel;
+    }
+
+    public int getPowerLevel() {
+        return powLevel;
+    }
+
+    public int getDurabilityLevel() {
+        return durLevel;
+    }
+
+    public int getFuelPrice() {
+        return fuelCapacityPrice;
+    }
+
+    public int getPowerPrice() {
+        return powerPrice;
+    }
+
+    public int getDurabilityPrice() {
+        return durabilityPrice;
     }
 
     //returns space bucks

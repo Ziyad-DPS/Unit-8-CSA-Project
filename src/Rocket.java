@@ -1,6 +1,4 @@
 import java.awt.*;
-import javax.swing.*;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,10 +7,10 @@ import javax.imageio.*;
 public class Rocket {
     
     private double x, y, xVelocity, yVelocity, acceleration, fuelCapacity, power, max_fuel, lastYVelocity, lastDistance;
-    private final double DISTANCE_TO_MOON, TERMINAL_VELOCITY, GRAVITY, FUEL_CONSUMPTION, GROUND;
+    private final double DISTANCE_TO_MOON, TERMINAL_VELOCITY, FUEL_CONSUMPTION, GRAVITY, GROUND;
     private final int IMAGE_WIDTH;
     private BufferedImage image;
-    private boolean setUp;
+    private boolean setUp, runComplete;
     private Player player;
 
     public Rocket(Player player) {
@@ -25,8 +23,9 @@ public class Rocket {
         this.acceleration = 0;
         this.fuelCapacity = 0;
         this.max_fuel = 0;
-        this.power = 17.5;
+        this.power = 0;
         this.setUp = false;
+        this.runComplete = false;
         this.player = player;
 
         try {
@@ -50,6 +49,7 @@ public class Rocket {
         y += yVelocity;
         borderCheck();
         updateVelocity();
+        rocketFalling();
     }
 
     public void updateVelocity() {
@@ -61,34 +61,31 @@ public class Rocket {
         fuelCapacity -= FUEL_CONSUMPTION;
     }
     
-    public void render(Graphics g, boolean gameStarted) {
-        if (!gameStarted) {
-            return;
-        }
-        
+    public void render(Graphics g) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         g.drawImage(
             image,
             (int) screenSize.getWidth() / 2 - (IMAGE_WIDTH / 2),
-            (int) screenSize.getHeight() - IMAGE_WIDTH - 150,
+            (int) screenSize.getHeight() - IMAGE_WIDTH - 85,
             IMAGE_WIDTH,
             IMAGE_WIDTH,
             null
         );
     }
 
-    private boolean rocketFalling() {
-        if (yVelocity - lastYVelocity >= TERMINAL_VELOCITY + 95 && setUp) {
+    private void rocketFalling() {
+        if (!setUp || runComplete) { return; }
+
+        if (yVelocity - lastYVelocity >= TERMINAL_VELOCITY + 50) {
             player.distanceToSpaceBucks((int) lastDistance);
-            return true;
+            runComplete = true;
+            return;
         }
         
-        if (lastDistance < getDistance() && setUp) {
+        if (lastDistance < getDistance()) {
             lastDistance = getDistance();
         }
-
-        return false;
     }
     
     private void borderCheck() {
@@ -104,10 +101,14 @@ public class Rocket {
         return 0.15 * x * x;
     }
 
-    public void setUpVelocity() {
-        int[] fuelCapacityValues = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
-        fuelCapacity = fuelCapacityValues[player.getFuelLevel() - 1];
-        max_fuel = fuelCapacityValues[player.getFuelLevel() - 1];
+    public void setUpLaunch() {
+        max_fuel = 95 + player.getFuelLevel() * 1.25;
+        fuelCapacity = max_fuel;
+
+        power = 16 + player.getPowerLevel() * 0.25;
+
+        lastDistance = 0;
+        runComplete = false;
         setUp = true;
     }
 

@@ -3,7 +3,6 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.*;
 import javax.imageio.*;
 import javax.swing.*;
 
@@ -19,8 +18,8 @@ public class Game extends JLayeredPane implements KeyListener {
     private GuiHandler guiHandler;
     private Player player;
     private Rocket rocket;
-    private Ball ball;
-    private BufferedImage startscreenImage, backgroundImage;
+    private BufferedImage startscreenImage, backgroundImage, asteriodImage, constalationImage, meteorImage, moonImage, planetImage;
+    private GameImage[] images;
 
     private boolean keyHeldDown, started;
     
@@ -34,7 +33,6 @@ public class Game extends JLayeredPane implements KeyListener {
         this.guiHandler = guiHandler;
         this.player = new Player(); 
         this.rocket = new Rocket(player);
-        this.ball = new Ball();
 
         guiHandler.setRocket(rocket);
         guiHandler.setPlayer(player);
@@ -45,9 +43,16 @@ public class Game extends JLayeredPane implements KeyListener {
         try {
             this.startscreenImage = ImageIO.read(new File("src/resources/start-Screen.png"));
             this.backgroundImage = ImageIO.read(new File("src/resources/play-Screen.png"));
+            this.moonImage = ImageIO.read(new File("src/resources/moon.png"));
+            this.asteriodImage = ImageIO.read(new File("src/resources/asteroid.png"));
+            this.constalationImage = ImageIO.read(new File("src/resources/constalation.png"));
+            this.meteorImage = ImageIO.read(new File("src/resources/meteor.png"));
+            this.planetImage = ImageIO.read(new File("src/resources/planet.png"));
         } catch (IOException error) {
             System.err.println(error);
         }
+
+        this.images = new GameImage[40];
 
         addKeyListener(this);
 
@@ -57,15 +62,16 @@ public class Game extends JLayeredPane implements KeyListener {
     }
 
     public void initGame() throws InterruptedException {
+        generateImages();
+
         boolean isPaused = false;
         boolean running = true;
         while (running) {
             if (isPaused == false) {
-                ball.moveBall();
                 rocket.update();
             }
 
-            isPaused = guiHandler.handlePause();
+            isPaused = guiHandler.getUiPaused();
             setFocusable(true);
             repaint();
 
@@ -81,8 +87,6 @@ public class Game extends JLayeredPane implements KeyListener {
         toolkit.sync();
 
         int offsetY = rocket.getY() - (int) toolkit.getScreenSize().getHeight() / 2;
-        
-        g.setColor(Color.RED);
 
         if (!guiHandler.getStarted()) {
             drawImage(
@@ -102,7 +106,7 @@ public class Game extends JLayeredPane implements KeyListener {
                 0, 
                 0, 
                 PANEL_WIDTH + 100, 
-                PANEL_HEIGHT + 100
+                PANEL_HEIGHT + 240
             );
             drawImage(
                 g,
@@ -110,20 +114,78 @@ public class Game extends JLayeredPane implements KeyListener {
                 0,
                 planetOffset,
                 PANEL_WIDTH + 100,
-                PANEL_HEIGHT + 100
+                PANEL_HEIGHT + 170
             );
         }
 
-        g.fillRect(0, -1300 - offsetY, (int) toolkit.getScreenSize().getWidth(), 240);
-        ball.render(g, rocket.getX(), offsetY);
-        rocket.render(g, guiHandler.getStarted());
+        if (guiHandler.getStarted()) {
+            for (GameImage gameImage : images) {
+                gameImage.render(g, offsetY);
+            }
+            rocket.render(g);
+        }
+    }
+
+    public void generateImages() {
+        int y = randomYPosition();
+        boolean rightSide = rightSide();
+
+        for (int i = 0; i < images.length; i++) {
+            int x = randomXPosition();
+            
+            if (rightSide) {
+                x += PANEL_WIDTH * 2/3;
+            }
+            
+            images[i] = new GameImage(x, y, randomImage());
+            y -= randomYDistance();
+            rightSide = rightSide();
+        }
+    }
+
+    public int randomXPosition() {
+        int MAX = PANEL_WIDTH * 1/3 - 100;
+        int MIN = 35;
+        return (int) (Math.random() * (MAX - MIN)) + MIN;
+    }
+
+    public int randomYPosition() {
+        int MAX = 450;
+        int MIN = 0;
+        return (int) (Math.random() * (MAX - MIN)) + MIN;
+    }
+
+    public int randomYDistance() {
+        int MAX = 3000;
+        int MIN = 2000;
+        return (int) (Math.random() * (MAX - MIN)) + MIN;
+    }
+
+    public boolean rightSide() {
+        return Math.random() * 100 > 50;
+    }
+
+    public BufferedImage randomImage() {
+        BufferedImage[] gameImages = {
+            asteriodImage,
+            constalationImage,
+            meteorImage,
+            planetImage
+        };
+
+        return gameImages[(int) (Math.random() * gameImages.length)];
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (keyHeldDown || started) { return; }
+        if (keyHeldDown || started || guiHandler.getUiPaused()) { return; }
 
-        rocket.setUpVelocity();
+        if (e.getKeyCode() == 27) {
+            guiHandler.setUiState("exitScreen");       
+            return;
+        }
+
+        rocket.setUpLaunch();
         keyHeldDown = true;
     }
 
@@ -148,36 +210,24 @@ public class Game extends JLayeredPane implements KeyListener {
         );
     }
 
-    private class Ball {
+    private class GameImage {
         
-        private int x, y, xV, yV;
+        private final int x, y;
+        private final BufferedImage image;
 
-        public Ball() {
-            this.x = 260;
-            this.y = 730;
-            this.xV = 6;
-            this.yV = 9;
+        public GameImage(int x, int y, BufferedImage image) {
+            this.x = x;
+            this.y = y;
+            this.image = image;
         }
 
-        public void moveBall() {
-            borderCheck();
-
-            x += xV;
-            y += yV;
-        }
-
-        public void render(Graphics g, int rocketX, int rocketY) {
-            g.fillOval(x - rocketX, y - rocketY, 30, 30);
-        }
-
-        private void borderCheck() {
-            if (x + 30 < 250 || x - 30 > Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 250) {
-                xV = -xV;
-            }
-
-            if (y + 30 < 250 || y - 30 > Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 250) {
-                yV = -yV;
-            }
+        public void render(Graphics g, int offset) {
+            g.drawImage(
+                image, 
+                x,
+                y - offset, 
+                null
+            );
         }
 
     }

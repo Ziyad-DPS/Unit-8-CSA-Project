@@ -1,13 +1,14 @@
 BACKLOG:
+
+IN PROGRESS:
 - [ ] simple animations
 - [ ] space conditions
 - [ ] reaching the moon/win screen
 
-IN PROGRESS:
-- [ ] rocket models, backgrounds, moon model
-- [ ] upgrades (Durability, Power, Fuel Capacity)
-
 DONE:
+- [x] upgrade screen
+- [x] upgrades (Durability, Power, Fuel Capacity)
+- [x] rocket models, backgrounds, moon model
 - [x] distance
 - [x] camera
 - [x] currency(SpaceBucks)
