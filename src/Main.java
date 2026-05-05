@@ -29,6 +29,7 @@ public class Main {
         // making the frame visible
         frame.setVisible(true);
 
+        //starts the game
         game.initGame();
     }
 }
