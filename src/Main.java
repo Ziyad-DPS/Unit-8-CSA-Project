@@ -27,6 +27,7 @@ public class Main {
         
         frame.setSize(screenSize.width, screenSize.height);
         // making the frame visible
+        frame.pack();
         frame.setVisible(true);
 
         //starts the game

@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.*;
@@ -169,9 +170,11 @@ public class GuiHandler extends JPanel implements Runnable {
 
         uiPaused = true;
 
-        JPanel background = new JPanel(null);
-        background.setBounds(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
+        JPanel background = new JPanel();
+        background.setLayout(new FlowLayout(FlowLayout.CENTER));
+        background.setBounds(0, PANEL_HEIGHT / 2 - PANEL_HEIGHT / 4, PANEL_WIDTH, PANEL_HEIGHT);
         background.setBackground(new Color(0, 0, 0, 0));
+        background.setAlignmentY(CENTER_ALIGNMENT);
 
         
         JButton closeButton = new JButton("CLOSE");
@@ -193,9 +196,10 @@ public class GuiHandler extends JPanel implements Runnable {
         for (int i = 0; i < amountOfCards; i++) {
             card = createCard(background, i);
             background.add(card);
+            ((FlowLayout)background.getLayout()).setHgap(80);
         }
         
-        background.add(closeButton);
+        add(closeButton);
         add(background);
         uiState = "rendered";
     }
@@ -205,20 +209,6 @@ public class GuiHandler extends JPanel implements Runnable {
         
         String cardType = cardTypes[position];
         
-        int margin = 100;
-        int cardsWidth = 470;
-        int cardsHeight = 670;
-        int upgradeCardsX = PANEL_WIDTH / 4 - cardsWidth / 2 + margin;
-        int upgradeCardsY = PANEL_HEIGHT / 2 - cardsHeight / 2 - margin;
-        Color cardBackground = new Color(3, 86, 252);
-
-        int upgradeButtonX = 35;
-        int upgradeButtonY = 45;
-        int buttonWidth = 400;
-        int buttonHeight = 100;
-        
-        int offset = cardsWidth * position + margin * position;
-
         int levelData, costData;
         String descriptionText;
 
@@ -238,65 +228,63 @@ public class GuiHandler extends JPanel implements Runnable {
             descriptionText = "<html>Increases the rockets<br/>power for faster travel<br/> speeds in space.<html>";
         }
 
-        JPanel card = new JPanel(null);
+        int margin = 100;
+        int cardsWidth = 470;
+        int cardsHeight = 670;
+        int upgradeCardsX = PANEL_WIDTH / 4 - cardsWidth / 2 + margin;
+        int upgradeCardsY = PANEL_HEIGHT / 2 - cardsHeight / 2 - margin;
+        Color cardBackground = new Color(3, 86, 252);
+
+        int upgradeButtonX = 35;
+        int upgradeButtonY = 45;
+        int buttonWidth = 400;
+        int buttonHeight = 100;
+        Dimension buttonDimension = new Dimension(buttonWidth, buttonHeight);
         
-        card.setBounds(
-            upgradeCardsX + offset,
-            upgradeCardsY,
-            cardsWidth, 
-            cardsHeight
+        int offset = cardsWidth * position + margin * position;
+        
+        JPanel card = new JPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        
+        card.setPreferredSize(
+            new Dimension(cardsWidth, cardsHeight)
         );
-
+        
         card.setBackground(cardBackground);
-
+        
         JButton upgradeButton = new JButton("UPGRADE");
-        upgradeButton.setBounds(
-            upgradeButtonX, 
-            cardsHeight - buttonHeight - margin,
-            buttonWidth, 
-            buttonHeight
+        upgradeButton.setPreferredSize(
+            buttonDimension
         );
         upgradeButton.setBackground(BUTTON_COLOR);
         upgradeButton.setFont(BUTTON_FONT);
         
         
         JLabel header = new JLabel(capitalizeString(cardType), JLabel.CENTER);
-        header.setBounds(
-            upgradeButtonX,
-            upgradeButtonY,
-            buttonWidth,
-            buttonHeight
+        header.setPreferredSize(
+            buttonDimension
         );
         header.setForeground(Color.white);
         header.setFont(BUTTON_FONT);
         
         
         JLabel costText = new JLabel("COST: $" + costData, JLabel.CENTER);
-        costText.setBounds(
-            upgradeButtonX,
-            upgradeButtonY + margin / 2 + 32,
-            buttonWidth,
-            buttonHeight
+        costText.setPreferredSize(
+            buttonDimension
         );
         costText.setForeground(Color.white);
         costText.setFont(new Font("Arial", Font.BOLD, 32));
         
         JLabel levelText = new JLabel("LEVEL: " + levelData, JLabel.CENTER);
-        levelText.setBounds(
-            upgradeButtonX,
-            upgradeButtonY + margin / 2 + 64,
-            buttonWidth,
-            buttonHeight
+        levelText.setPreferredSize(
+            buttonDimension
         );
         levelText.setForeground(Color.white);
         levelText.setFont(new Font("Arial", Font.BOLD, 32));
 
-        JLabel description = new JLabel(descriptionText);
-        description.setBounds(
-            upgradeButtonX,
-            upgradeButtonY + margin + 128,
-            buttonWidth,
-            buttonHeight
+        JLabel description = new JLabel(descriptionText, JLabel.CENTER);
+        description.setPreferredSize(
+            buttonDimension
         );
         description.setForeground(Color.white);
         description.setFont(new Font("Arial", Font.BOLD, 30));
@@ -324,11 +312,21 @@ public class GuiHandler extends JPanel implements Runnable {
             }
         });
         
-        card.add(upgradeButton);
+        card.add(Box.createRigidArea(new Dimension(0, 50)));
         card.add(header);
+        card.add(Box.createRigidArea(new Dimension(0, 35)));
+        header.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(costText);
+        card.add(Box.createRigidArea(new Dimension(0, 5)));
+        costText.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(levelText);
+        card.add(Box.createRigidArea(new Dimension(0, 35)));
+        levelText.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(description);
+        card.add(Box.createRigidArea(new Dimension(0, 65)));
+        description.setAlignmentX(Component.CENTER_ALIGNMENT);
+        card.add(upgradeButton);
+        upgradeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         return card;
     }

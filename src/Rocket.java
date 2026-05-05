@@ -40,8 +40,8 @@ public class Rocket {
         this.TERMINAL_VELOCITY = 40;
         this.GRAVITY = 1.24;
         this.FUEL_CONSUMPTION = 0.2;
-        this.GROUND = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2 + 130;
-        this.IMAGE_WIDTH = 500;
+        this.GROUND = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2 + image.getHeight();
+        this.IMAGE_WIDTH = 400;
     }
     
     public void update() {
@@ -89,7 +89,7 @@ public class Rocket {
     }
     
     private void borderCheck() {
-        if (y - 130 >= Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2) {
+        if (y >= GROUND) {
             y = GROUND;
         } 
         else if (yVelocity < TERMINAL_VELOCITY) {
@@ -113,6 +113,7 @@ public class Rocket {
     }
 
     public int getDistance() {
+        if (y > GROUND) { return 0; }
         return Math.abs((int) y - (int) GROUND);
     }
 

@@ -82,6 +82,8 @@ public class Game extends JLayeredPane implements KeyListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        Graphics2D g2d = (Graphics2D) g;
         
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         toolkit.sync();
@@ -90,7 +92,7 @@ public class Game extends JLayeredPane implements KeyListener {
 
         if (!guiHandler.getStarted()) {
             drawImage(
-                g, 
+                g2d, 
                 startscreenImage,
                 0,
                 0,
@@ -101,7 +103,7 @@ public class Game extends JLayeredPane implements KeyListener {
             int planetOffset = -offsetY - 50;
 
             drawImage(
-                g, 
+                g2d, 
                 backgroundImage, 
                 0, 
                 0, 
@@ -109,7 +111,7 @@ public class Game extends JLayeredPane implements KeyListener {
                 PANEL_HEIGHT + 240
             );
             drawImage(
-                g,
+                g2d,
                 backgroundImage,
                 0,
                 planetOffset,
@@ -120,9 +122,9 @@ public class Game extends JLayeredPane implements KeyListener {
 
         if (guiHandler.getStarted()) {
             for (GameImage gameImage : images) {
-                gameImage.render(g, offsetY);
+                gameImage.render(g2d, offsetY);
             }
-            rocket.render(g);
+            rocket.render(g2d);
         }
     }
 
@@ -224,7 +226,7 @@ public class Game extends JLayeredPane implements KeyListener {
         public void render(Graphics g, int offset) {
             g.drawImage(
                 image, 
-                x,
+                x - image.getWidth(),
                 y - offset, 
                 null
             );
