@@ -6,9 +6,9 @@ import javax.imageio.*;
 
 public class Rocket {
     
-    private double x, y, xVelocity, yVelocity, acceleration, fuelCapacity, power, max_fuel, lastYVelocity, lastDistance;
+    private double x, y, xVelocity, yVelocity, acceleration, fuelCapacity, power, max_fuel, lastYVelocity, lastDistance, scaleX, scaleY;
     private final double DISTANCE_TO_MOON, TERMINAL_VELOCITY, FUEL_CONSUMPTION, GRAVITY, GROUND;
-    private final int IMAGE_WIDTH;
+    private final int IMAGE_WIDTH, PANEL_WIDTH, PANEL_HEIGHT;
     private BufferedImage image;
     private boolean setUp, runComplete;
     private Player player;
@@ -34,14 +34,22 @@ public class Rocket {
         } catch (IOException error) {
             System.err.println(error);
         }
-        
+
         // Constants
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        this.PANEL_WIDTH = (int) screenSize.getWidth();
+        this.PANEL_HEIGHT = (int) screenSize.getHeight();
+
+        this.scaleX = (double) PANEL_WIDTH / 2560;
+        this.scaleY = (double) PANEL_HEIGHT / 1600;
+        
         this.DISTANCE_TO_MOON = 20000;
         this.TERMINAL_VELOCITY = 40;
         this.GRAVITY = 1.24;
         this.FUEL_CONSUMPTION = 0.2;
-        this.GROUND = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2 + image.getHeight();
-        this.IMAGE_WIDTH = 400;
+        this.IMAGE_WIDTH = (int) (400 * scaleX);
+        this.GROUND = (int) PANEL_HEIGHT / 2 + (int) (image.getHeight() * scaleY);
     }
     
     public void update() {
@@ -62,12 +70,10 @@ public class Rocket {
     }
     
     public void render(Graphics g) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
         g.drawImage(
             image,
-            (int) screenSize.getWidth() / 2 - (IMAGE_WIDTH / 2),
-            (int) screenSize.getHeight() - IMAGE_WIDTH - 85,
+            (int) PANEL_WIDTH / 2 - (IMAGE_WIDTH / 2),
+            (int) PANEL_HEIGHT - IMAGE_WIDTH - (int) (85 * scaleY),
             IMAGE_WIDTH,
             IMAGE_WIDTH,
             null

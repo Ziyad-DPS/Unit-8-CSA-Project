@@ -14,6 +14,7 @@ public class Game extends JLayeredPane implements KeyListener {
 
     // Custom graphics website using JFrame https://www3.ntu.edu.sg/home/ehchua/programming/java/J4b_CustomGraphics.html
     private int PANEL_WIDTH, PANEL_HEIGHT;
+    private double scaleX, scaleY;
     
     private GuiHandler guiHandler;
     private Player player;
@@ -29,6 +30,9 @@ public class Game extends JLayeredPane implements KeyListener {
 
         this.PANEL_WIDTH = (int) screenSize.getWidth();
         this.PANEL_HEIGHT = (int) screenSize.getHeight();
+
+        this.scaleX = (double) PANEL_WIDTH / 2560;
+        this.scaleY = (double) PANEL_HEIGHT / 1600;
         
         this.guiHandler = guiHandler;
         this.player = new Player(); 
@@ -88,7 +92,7 @@ public class Game extends JLayeredPane implements KeyListener {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         toolkit.sync();
 
-        int offsetY = rocket.getY() - (int) toolkit.getScreenSize().getHeight() / 2;
+        int offsetY = rocket.getY() - (int) PANEL_HEIGHT / 2;
 
         if (!guiHandler.getStarted()) {
             drawImage(
@@ -96,33 +100,34 @@ public class Game extends JLayeredPane implements KeyListener {
                 startscreenImage,
                 0,
                 0,
-                PANEL_WIDTH, 
+                PANEL_WIDTH,
                 PANEL_HEIGHT
             );
         } else {
-            int planetOffset = -offsetY - 50;
+            int planetOffset = -offsetY - (int) (120 * scaleY);
+            int padding = (int) (100 * scaleX);
 
             drawImage(
                 g2d, 
                 backgroundImage, 
                 0, 
                 0, 
-                PANEL_WIDTH + 100, 
-                PANEL_HEIGHT + 240
+                PANEL_WIDTH + padding, 
+                PANEL_HEIGHT + (int) (240 * scaleY)
             );
             drawImage(
                 g2d,
                 backgroundImage,
                 0,
                 planetOffset,
-                PANEL_WIDTH + 100,
-                PANEL_HEIGHT + 170
+                PANEL_WIDTH + padding,
+                PANEL_HEIGHT + (int) (240 * scaleY)
             );
         }
 
         if (guiHandler.getStarted()) {
             for (GameImage gameImage : images) {
-                gameImage.render(g2d, offsetY);
+                gameImage.render(g2d, (int) (offsetY * scaleY));
             }
             rocket.render(g2d);
         }
@@ -146,7 +151,7 @@ public class Game extends JLayeredPane implements KeyListener {
     }
 
     public int randomXPosition() {
-        int MAX = PANEL_WIDTH * 1/3 - 100;
+        int MAX = PANEL_WIDTH * 1/3 - (int) (100 * scaleX);
         int MIN = 35;
         return (int) (Math.random() * (MAX - MIN)) + MIN;
     }
@@ -218,16 +223,16 @@ public class Game extends JLayeredPane implements KeyListener {
         private final BufferedImage image;
 
         public GameImage(int x, int y, BufferedImage image) {
-            this.x = x;
-            this.y = y;
+            this.x = (int) (x * scaleX);
+            this.y = (int) (y * scaleY);
             this.image = image;
         }
 
         public void render(Graphics g, int offset) {
             g.drawImage(
                 image, 
-                x - image.getWidth(),
-                y - offset, 
+                x - (int) (image.getWidth() * scaleX),
+                y - offset,
                 null
             );
         }
