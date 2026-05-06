@@ -201,7 +201,7 @@ public class Game extends JLayeredPane implements KeyListener {
         return;
     }
 
-    private void drawImage(Graphics g, BufferedImage image, int x, int y,int width, int height) {
+    private void drawImage(Graphics g, BufferedImage image, int x, int y, int width, int height) {
         g.drawImage(
             image,
             x,

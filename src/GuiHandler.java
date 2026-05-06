@@ -11,6 +11,7 @@ public class GuiHandler extends JPanel implements Runnable {
 
     private final JFrame frame;
     private final int PANEL_WIDTH, PANEL_HEIGHT;
+    private final double uiScaleX, uiScaleY;
     private Rocket rocket;
     private String uiState;
     private boolean uiPaused, started;
@@ -21,11 +22,13 @@ public class GuiHandler extends JPanel implements Runnable {
     public GuiHandler(JFrame frame) {
         super(null);
         // Game panel to edit game UI
-        // Get screen size from Toolkit\
+        // Get screen size from Toolkit
         this.frame = frame;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.PANEL_WIDTH = (int) screenSize.getWidth();
         this.PANEL_HEIGHT = (int) screenSize.getHeight();
+        this.uiScaleX = (double) PANEL_WIDTH / 2560;
+        this.uiScaleY = (double) PANEL_HEIGHT / 1600;
         this.rocket = null;
         this.player = null;
         this.uiState = "startScreen";
@@ -33,7 +36,7 @@ public class GuiHandler extends JPanel implements Runnable {
         this.started = false;
 
         this.BUTTON_COLOR = new Color(0, 146, 242);
-        this.BUTTON_FONT = new Font("Arial", Font.BOLD, 64);
+        this.BUTTON_FONT = new Font("Arial", Font.BOLD, (int) (64 * uiScaleX));
 
         setPreferredSize(screenSize);
     }
@@ -64,6 +67,8 @@ public class GuiHandler extends JPanel implements Runnable {
         }
         
         // Start button
+        int sizeX = (int) (750 * uiScaleX);
+        int sizeY = (int) (160 * uiScaleY);
         JButton startButton = new JButton("Start Game");
         
         // startButton action to initalize the game
@@ -82,7 +87,7 @@ public class GuiHandler extends JPanel implements Runnable {
         startButton.setBackground(BUTTON_COLOR);
         startButton.setFont(BUTTON_FONT);
         // Positioning of the button being centered horizontaly and going in the bottom
-        startButton.setBounds(PANEL_WIDTH / 2 - 375, PANEL_HEIGHT / 2 - 80, 750, 160);
+        startButton.setBounds(PANEL_WIDTH / 2 - (int) (375 * uiScaleX), PANEL_HEIGHT / 2 - (int) (80 * uiScaleY), sizeX, sizeY);
         add(startButton);
         uiState = "rendered";
         uiPaused = true;
@@ -93,14 +98,20 @@ public class GuiHandler extends JPanel implements Runnable {
             return;
         }
 
+        int labelWidth = (int) (2000 * uiScaleX);
+        int labelHeight = (int) (300 * uiScaleX);
+        int buttonWidth = (int) (750 * uiScaleX);
+        int buttonHeight = (int) (130 * uiScaleY);
+        int xPosition = (int) (35 * uiScaleX);
+
         JLabel label = new JLabel(rocket.getDistance() + "");
-        label.setBounds(35, PANEL_HEIGHT - 450, 2000, 300);
+        label.setBounds(xPosition, PANEL_HEIGHT - (int) (450 * uiScaleY), labelWidth, labelHeight);
         label.setFont(BUTTON_FONT);
         label.setForeground(Color.WHITE);
         label.setName("distanceLabel");
 
         JLabel money = new JLabel(player.getSpaceBucks() + "");
-        money.setBounds(35, PANEL_HEIGHT - 350, 2000, 300);
+        money.setBounds(xPosition, PANEL_HEIGHT - (int) (350 * uiScaleY), labelWidth, labelHeight);
         money.setFont(BUTTON_FONT);
         money.setForeground(Color.WHITE);
         money.setName("moneyLabel");
@@ -109,7 +120,7 @@ public class GuiHandler extends JPanel implements Runnable {
         upgradeScreenButton.setBackground(BUTTON_COLOR);
         upgradeScreenButton.setFont(BUTTON_FONT);
         // Positioning of the button being centered horizontaly and going in the bottom
-        upgradeScreenButton.setBounds(35, PANEL_HEIGHT - 150, 750, 130);
+        upgradeScreenButton.setBounds(xPosition, PANEL_HEIGHT - (int) (150 * uiScaleY), buttonWidth, buttonHeight);
         
         upgradeScreenButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -131,9 +142,13 @@ public class GuiHandler extends JPanel implements Runnable {
             return;
         }
         uiPaused = true;
+
+        int sizeX = (int) (400 * uiScaleX);
+        int sizeY = (int) (100 * uiScaleY);
+        int margin = sizeY / 2 + (int) (75 * uiScaleY);
         
         JButton exitButton = new JButton("EXIT");
-        exitButton.setBounds(PANEL_WIDTH / 2 - 200, PANEL_HEIGHT / 2 - 75, 400, 100);
+        exitButton.setBounds(PANEL_WIDTH / 2 - sizeX / 2, PANEL_HEIGHT / 2 - margin, sizeX, sizeY);
         exitButton.setBackground(BUTTON_COLOR);
         exitButton.setFont(BUTTON_FONT);
 
@@ -145,7 +160,7 @@ public class GuiHandler extends JPanel implements Runnable {
         });
 
         JButton resumeButton = new JButton("RESUME");
-        resumeButton.setBounds(PANEL_WIDTH / 2 - 200, PANEL_HEIGHT / 2 + 75, 400, 100);
+        resumeButton.setBounds(PANEL_WIDTH / 2 - sizeX / 2, PANEL_HEIGHT / 2, sizeX, sizeY);
         resumeButton.setBackground(BUTTON_COLOR);
         resumeButton.setFont(BUTTON_FONT);
         
@@ -176,9 +191,10 @@ public class GuiHandler extends JPanel implements Runnable {
         background.setBackground(new Color(0, 0, 0, 0));
         background.setAlignmentY(CENTER_ALIGNMENT);
 
-        
+        int buttonX = (int) (PANEL_WIDTH / 2 - 300 * uiScaleX);
+        int buttonY = (int) (PANEL_HEIGHT - 260 * uiScaleY);
         JButton closeButton = new JButton("CLOSE");
-        closeButton.setBounds(PANEL_WIDTH / 2 - 300, PANEL_HEIGHT - 260, 600, 120);
+        closeButton.setBounds(buttonX, buttonY, (int) (600 * uiScaleX), (int) (120 * uiScaleY));
         closeButton.setBackground(BUTTON_COLOR);
         closeButton.setFont(BUTTON_FONT);
 
@@ -196,7 +212,7 @@ public class GuiHandler extends JPanel implements Runnable {
         for (int i = 0; i < amountOfCards; i++) {
             card = createCard(background, i);
             background.add(card);
-            ((FlowLayout)background.getLayout()).setHgap(80);
+            ((FlowLayout)background.getLayout()).setHgap((int) (80 * uiScaleX));
         }
         
         add(closeButton);
@@ -228,20 +244,14 @@ public class GuiHandler extends JPanel implements Runnable {
             descriptionText = "<html>Increases the rockets<br/>power for faster travel<br/> speeds in space.<html>";
         }
 
-        int margin = 100;
-        int cardsWidth = 470;
-        int cardsHeight = 670;
-        int upgradeCardsX = PANEL_WIDTH / 4 - cardsWidth / 2 + margin;
-        int upgradeCardsY = PANEL_HEIGHT / 2 - cardsHeight / 2 - margin;
+        int cardsWidth = (int) (470 * uiScaleX);
+        int cardsHeight = (int) (670 * uiScaleY);
         Color cardBackground = new Color(3, 86, 252);
 
-        int upgradeButtonX = 35;
-        int upgradeButtonY = 45;
-        int buttonWidth = 400;
-        int buttonHeight = 100;
+        int buttonWidth = (int) (400 * uiScaleX);
+        int buttonHeight = (int) (100 * uiScaleY);
+        int fontSize = (int) (32 * uiScaleX);
         Dimension buttonDimension = new Dimension(buttonWidth, buttonHeight);
-        
-        int offset = cardsWidth * position + margin * position;
         
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
@@ -273,21 +283,21 @@ public class GuiHandler extends JPanel implements Runnable {
             buttonDimension
         );
         costText.setForeground(Color.white);
-        costText.setFont(new Font("Arial", Font.BOLD, 32));
+        costText.setFont(new Font("Arial", Font.BOLD, fontSize));
         
         JLabel levelText = new JLabel("LEVEL: " + levelData, JLabel.CENTER);
         levelText.setPreferredSize(
             buttonDimension
         );
         levelText.setForeground(Color.white);
-        levelText.setFont(new Font("Arial", Font.BOLD, 32));
+        levelText.setFont(new Font("Arial", Font.BOLD, fontSize));
 
         JLabel description = new JLabel(descriptionText, JLabel.CENTER);
         description.setPreferredSize(
             buttonDimension
         );
         description.setForeground(Color.white);
-        description.setFont(new Font("Arial", Font.BOLD, 30));
+        description.setFont(new Font("Arial", Font.BOLD, (int) (30 * uiScaleX)));
         
         upgradeButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -312,20 +322,24 @@ public class GuiHandler extends JPanel implements Runnable {
             }
         });
         
-        card.add(Box.createRigidArea(new Dimension(0, 50)));
+        Dimension gapeOne = new Dimension(0, (int) (50 * uiScaleY));
+        Dimension gapeTwo = new Dimension(0, (int) (35 * uiScaleY));
+
+        card.add(Box.createRigidArea(gapeOne));
         card.add(header);
-        card.add(Box.createRigidArea(new Dimension(0, 35)));
+        card.add(Box.createRigidArea(gapeTwo));
         header.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(costText);
-        card.add(Box.createRigidArea(new Dimension(0, 5)));
+        card.add(Box.createRigidArea(new Dimension(0, (int) (5 * uiScaleY))));
         costText.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(levelText);
-        card.add(Box.createRigidArea(new Dimension(0, 35)));
+        card.add(Box.createRigidArea(gapeTwo));
         levelText.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(description);
-        card.add(Box.createRigidArea(new Dimension(0, 65)));
+        card.add(Box.createRigidArea(new Dimension(0, (int) (65 * uiScaleY))));
         description.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.add(upgradeButton);
+        card.add(Box.createRigidArea(gapeOne));
         upgradeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         return card;
