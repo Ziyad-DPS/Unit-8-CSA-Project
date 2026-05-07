@@ -6,24 +6,25 @@ import javax.imageio.*;
 
 public class Rocket {
     
-    private double x, y, xVelocity, yVelocity, acceleration, fuelCapacity, power, max_fuel, lastYVelocity, lastDistance, scaleX, scaleY;
+    private int time;
+    private double x, y, yVelocity, acceleration, fuelCapacity, power, max_fuel, lastDistance, scaleX, scaleY;
     private final double DISTANCE_TO_MOON, TERMINAL_VELOCITY, FUEL_CONSUMPTION, GRAVITY, GROUND;
     private final int IMAGE_WIDTH, PANEL_WIDTH, PANEL_HEIGHT;
     private BufferedImage image;
-    private boolean setUp, runComplete;
+    private boolean setUp, runComplete, timer;
     private Player player;
 
     public Rocket(Player player) {
         this.x = 0;
         this.y = 0;
-        this.xVelocity = 0;
         this.yVelocity = 0;
-        this.lastYVelocity = 0;
         this.lastDistance = 0;
         this.acceleration = 0;
         this.fuelCapacity = 0;
         this.max_fuel = 0;
         this.power = 0;
+        this.time = 0;
+        this.timer = false;
         this.setUp = false;
         this.runComplete = false;
         this.player = player;
@@ -53,17 +54,30 @@ public class Rocket {
     }
     
     public void update() {
-        x += xVelocity;
+        if (timer) {
+            if (time < 60) {
+                time++;
+            } 
+            else {
+                timer = false;
+                runComplete = false;
+                setUp = false;
+                time = 0;
+                y = 0;
+                yVelocity = 0;
+                fuelCapacity = 0;
+            }
+        }
+
         y += yVelocity;
         borderCheck();
-        updateVelocity();
         rocketFalling();
+        updateVelocity();
     }
 
     public void updateVelocity() {
         if (fuelCapacity < 0 || !setUp) { return; }
 
-        lastYVelocity = yVelocity;
         acceleration = easingFunction(1 - (fuelCapacity / max_fuel)) * power;
         yVelocity -= acceleration;
         fuelCapacity -= FUEL_CONSUMPTION;
@@ -82,10 +96,11 @@ public class Rocket {
 
     private void rocketFalling() {
         if (!setUp || runComplete) { return; }
-
-        if (yVelocity - lastYVelocity >= TERMINAL_VELOCITY + 50) {
+        
+        if (getDistance() - lastDistance <= -300) {
             player.distanceToSpaceBucks((int) lastDistance);
             runComplete = true;
+            timer = true;
             return;
         }
         
@@ -108,14 +123,15 @@ public class Rocket {
     }
 
     public void setUpLaunch() {
+        if (runComplete || setUp || y != GROUND) { return; }
         max_fuel = 95 + player.getFuelLevel() * 1.25;
         fuelCapacity = max_fuel;
 
-        power = 16 + player.getPowerLevel() * 0.25;
+        power = 16 + player.getPowerLevel() * 0.4;
 
         lastDistance = 0;
-        runComplete = false;
         setUp = true;
+        timer = false;
     }
 
     public int getDistance() {

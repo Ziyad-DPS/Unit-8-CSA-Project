@@ -1,7 +1,7 @@
 BACKLOG:
 
 IN PROGRESS:
-- [ ] simple animations
+- [ ] simple vfx
 - [ ] space conditions
 - [ ] reaching the moon/win screen
 
