@@ -10,7 +10,7 @@ public class Rocket {
     private int time;
     private double x, y, yVelocity, acceleration, fuelCapacity, power, max_fuel, lastDistance, scaleX, scaleY;
     private final double DISTANCE_TO_MOON, TERMINAL_VELOCITY, FUEL_CONSUMPTION, GRAVITY, GROUND;
-    private final int IMAGE_WIDTH, PANEL_WIDTH, PANEL_HEIGHT;
+    private final int IMAGE_WIDTH, IMAGE_X, IMAGE_Y, PANEL_WIDTH, PANEL_HEIGHT, MAX_PARTICLES;
     private ArrayList<Particle> particles;
     private BufferedImage image;
     private boolean setUp, runComplete, timer;
@@ -54,7 +54,10 @@ public class Rocket {
         this.GRAVITY = 1.24;
         this.FUEL_CONSUMPTION = 0.2;
         this.IMAGE_WIDTH = (int) (400 * scaleX);
+        this.IMAGE_X = (int) PANEL_WIDTH / 2 - (IMAGE_WIDTH / 2);
+        this.IMAGE_Y = (int) PANEL_HEIGHT - IMAGE_WIDTH - (int) (85 * scaleY);
         this.GROUND = (int) PANEL_HEIGHT / 2 + (int) (image.getHeight() * scaleY);
+        this.MAX_PARTICLES = 40;
     }
     
     public void update() {
@@ -73,10 +76,15 @@ public class Rocket {
             }
         }
 
+        if (particles.size() < MAX_PARTICLES) {
+            addParticles();
+        }
+
         y += yVelocity;
         borderCheck();
         rocketFalling();
         updateVelocity();
+        updateParticles();
     }
 
     public void updateVelocity() {
@@ -90,12 +98,16 @@ public class Rocket {
     public void render(Graphics g) {
         g.drawImage(
             image,
-            (int) PANEL_WIDTH / 2 - (IMAGE_WIDTH / 2),
-            (int) PANEL_HEIGHT - IMAGE_WIDTH - (int) (85 * scaleY),
+            IMAGE_X,
+            IMAGE_Y,
             IMAGE_WIDTH,
             IMAGE_WIDTH,
             null
         );
+
+        for (Particle particle : particles) {
+            particle.render(g);
+        }
     }
 
     private void rocketFalling() {
@@ -138,6 +150,21 @@ public class Rocket {
         timer = false;
     }
 
+    public void addParticles() {
+        for (int i = particles.size(); i < MAX_PARTICLES; i++) {
+            Particle particle = new Particle(IMAGE_X + (int) (200 * scaleX), (int) y, 0, i, i);
+            
+            particles.add(particle);
+        }
+    }
+
+    public void updateParticles() {
+        for (Particle particle : particles) {
+            particle.update();
+            particle.collisionDetection();
+        }
+    }
+
     public int getDistance() {
         if (y > GROUND) { return 0; }
         return Math.abs((int) y - (int) GROUND);
@@ -154,16 +181,29 @@ public class Rocket {
     private class Particle {
 
         private int x, y, xVelocity, yVelocity;
-        private final int size;
+        private final int size, index;
+        private final int TOP, BOTTOM, GROUND;
 
-        public Particle() {
+        public Particle(int x, int y, int xVelocity, int yVelocity, int index) {
+            this.x = x;
+            this.y = y;
+            this.xVelocity = xVelocity;
+            this.yVelocity = yVelocity;
             this.size = (int) (randomSize() * scaleX);
+            this.index = index;
+
+            this.TOP = (int) (-400 * scaleY);
+            this.BOTTOM = (int) (PANEL_HEIGHT + 400 * scaleY);
+            this.GROUND = PANEL_HEIGHT - (int) (70 * scaleY);
         }
 
         public void render(Graphics g) {
+            int offset = getY() - (int) PANEL_HEIGHT / 2;
+
+            g.setColor(Color.red);
             g.fillOval(
                 x,
-                y,
+                y - offset,
                 size,
                 size
             );
@@ -175,12 +215,23 @@ public class Rocket {
         }
 
         public void collisionDetection() {
-            
+            if (y >= GROUND) {
+                yVelocity = -yVelocity;
+            }
+
+            if (y > BOTTOM || y < TOP) { 
+                particles.remove(index);
+            }
+
+            if (x < 0 || x > PANEL_WIDTH) {
+                particles.remove(index);
+            }
+
         }
 
         private int randomSize() {
-            int MAX = 15;
-            int MIN = 5;
+            int MAX = 30;
+            int MIN = 15;
             return (int) (Math.random() * (MAX - MIN)) + MIN;
         }
 
