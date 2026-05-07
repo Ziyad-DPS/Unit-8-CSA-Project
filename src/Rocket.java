@@ -29,6 +29,7 @@ public class Rocket {
         this.runComplete = false;
         this.player = player;
 
+        // Find the rocket image and deal with IOerror handling
         try {
             File file = new File("src/resources/rocketship.png");
             this.image = ImageIO.read(file);
@@ -36,15 +37,18 @@ public class Rocket {
             System.err.println(error);
         }
 
-        // Constants
+        // Get a Dimension named screenSize
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
+        // Get the screen sizes
         this.PANEL_WIDTH = (int) screenSize.getWidth();
         this.PANEL_HEIGHT = (int) screenSize.getHeight();
 
+        // Used to resize things for different screen sizes
         this.scaleX = (double) PANEL_WIDTH / 2560;
         this.scaleY = (double) PANEL_HEIGHT / 1600;
         
+        // Create constants
         this.DISTANCE_TO_MOON = 20000;
         this.TERMINAL_VELOCITY = 40;
         this.GRAVITY = 1.24;
@@ -53,7 +57,12 @@ public class Rocket {
         this.GROUND = (int) PANEL_HEIGHT / 2 + (int) (image.getHeight() * scaleY);
     }
     
+    // Updates variables for physics e.g yVelocity, collisionDetection etc
     public void update() {
+        /* 
+            Creates a timer based on the screens FPS
+            to restart the game when the rocket starts falling
+        */
         if (timer) {
             if (time < 60) {
                 time++;
@@ -69,21 +78,34 @@ public class Rocket {
             }
         }
 
+        // Update the yPosition
         y += yVelocity;
+        
+        // Collision detection, is rocket falling, and update yVelocity
         borderCheck();
         rocketFalling();
         updateVelocity();
     }
 
+    // Update yVelocity based off of fuelCapacity and use the easing function
     public void updateVelocity() {
+        // Base conditions 
         if (fuelCapacity < 0 || !setUp) { return; }
 
+        /* 
+            Acceleration gets a x value 
+            and uses it to smooth the acceleration of the rocket
+        */
         acceleration = easingFunction(1 - (fuelCapacity / max_fuel)) * power;
+
+        // Apply acceleration and get rid of some fuel
         yVelocity -= acceleration;
         fuelCapacity -= FUEL_CONSUMPTION;
     }
     
+    // renders the rocket image
     public void render(Graphics g) {
+        // Place the image in the center and scale it to fit the users screen size
         g.drawImage(
             image,
             (int) PANEL_WIDTH / 2 - (IMAGE_WIDTH / 2),
@@ -94,9 +116,14 @@ public class Rocket {
         );
     }
 
+    // Checks if the rocket is falling
     private void rocketFalling() {
+        // Base conditions
         if (!setUp || runComplete) { return; }
         
+        // If the rocket is falling then set the timer up
+        // add spacebucks
+        // and say the run/flight was complete
         if (getDistance() - lastDistance <= -300) {
             player.distanceToSpaceBucks((int) lastDistance);
             runComplete = true;
@@ -104,24 +131,31 @@ public class Rocket {
             return;
         }
         
+        // sets lastDistance to current distance if the rocket isnt falling
         if (lastDistance < getDistance()) {
             lastDistance = getDistance();
         }
     }
     
+    // Physics with gravity and ground collision
     private void borderCheck() {
+        // If the rocket is on the ground
+        // or below it set y to the ground
         if (y >= GROUND) {
             y = GROUND;
         } 
+        // if the rocket is not at its terminal velocity add gravity
         else if (yVelocity < TERMINAL_VELOCITY) {
             yVelocity += GRAVITY;
         }
     }
 
+    // An easing function derived from https://easings.net/
     private double easingFunction(double x) {
         return 0.15 * x * x;
     }
 
+    // Set ups the launch for the rocket setting fuel capaicty and power
     public void setUpLaunch() {
         if (runComplete || setUp || y != GROUND) { return; }
         max_fuel = 95 + player.getFuelLevel() * 1.25;
@@ -134,15 +168,18 @@ public class Rocket {
         timer = false;
     }
 
+    // Gets the distance for the rocket from the ground
     public int getDistance() {
         if (y > GROUND) { return 0; }
         return Math.abs((int) y - (int) GROUND);
     }
 
+    // Getter for x
     public int getX() {
         return (int) x;
     }
 
+    // Getter for y
     public int getY() {
         return (int) y;
     }
