@@ -3,6 +3,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.*;
+import java.util.ArrayList;
 
 public class Rocket {
     
@@ -10,6 +11,7 @@ public class Rocket {
     private double x, y, yVelocity, acceleration, fuelCapacity, power, max_fuel, lastDistance, scaleX, scaleY;
     private final double DISTANCE_TO_MOON, TERMINAL_VELOCITY, FUEL_CONSUMPTION, GRAVITY, GROUND;
     private final int IMAGE_WIDTH, PANEL_WIDTH, PANEL_HEIGHT;
+    private ArrayList<Particle> particles;
     private BufferedImage image;
     private boolean setUp, runComplete, timer;
     private Player player;
@@ -28,6 +30,8 @@ public class Rocket {
         this.setUp = false;
         this.runComplete = false;
         this.player = player;
+
+        this.particles = new ArrayList<Particle>();
 
         try {
             File file = new File("src/resources/rocketship.png");
@@ -145,6 +149,41 @@ public class Rocket {
 
     public int getY() {
         return (int) y;
+    }
+
+    private class Particle {
+
+        private int x, y, xVelocity, yVelocity;
+        private final int size;
+
+        public Particle() {
+            this.size = (int) (randomSize() * scaleX);
+        }
+
+        public void render(Graphics g) {
+            g.fillOval(
+                x,
+                y,
+                size,
+                size
+            );
+        }
+
+        public void update() {
+            x += xVelocity;
+            y += yVelocity;
+        }
+
+        public void collisionDetection() {
+            
+        }
+
+        private int randomSize() {
+            int MAX = 15;
+            int MIN = 5;
+            return (int) (Math.random() * (MAX - MIN)) + MIN;
+        }
+
     }
 
 }
