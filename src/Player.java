@@ -64,11 +64,11 @@ public class Player {
     //increases the price of upgrades depending on the type parameter
     public void increasePrice(int type){
         if(type==1){
-            durabilityPrice *= 1.7;
+            durabilityPrice *= 1.6;
         }else if(type==2){
-            powerPrice *= 1.7;
+            powerPrice *= 1.6;
         }else if(type==3){
-            fuelCapacityPrice *= 1.7;
+            fuelCapacityPrice *= 1.6;
         }
     }
 
@@ -95,22 +95,27 @@ public class Player {
         return fuelLevel;
     }
 
+    //returns power level
     public int getPowerLevel() {
         return powLevel;
     }
 
+    //returns durability level
     public int getDurabilityLevel() {
         return durLevel;
     }
 
+    //returns the fuel price
     public int getFuelPrice() {
         return fuelCapacityPrice;
     }
 
+    //returns the power price
     public int getPowerPrice() {
         return powerPrice;
     }
 
+    //returns durability price
     public int getDurabilityPrice() {
         return durabilityPrice;
     }

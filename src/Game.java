@@ -1,3 +1,4 @@
+//imports important methods and objects
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -13,6 +14,7 @@ public class Game extends JLayeredPane implements KeyListener {
     */
 
     // Custom graphics website using JFrame https://www3.ntu.edu.sg/home/ehchua/programming/java/J4b_CustomGraphics.html
+    //creates vars and objects to be used later
     private int PANEL_WIDTH, PANEL_HEIGHT;
     private double scaleX, scaleY;
     
@@ -26,6 +28,7 @@ public class Game extends JLayeredPane implements KeyListener {
     
     public Game(GuiHandler guiHandler) {
         // https://www.geeksforgeeks.org/java/java-jlayeredpane/ link to learn about JLayeredPane
+        //makes window full screen and sets certain variables and objects
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         this.PANEL_WIDTH = (int) screenSize.getWidth();
@@ -44,6 +47,7 @@ public class Game extends JLayeredPane implements KeyListener {
         this.keyHeldDown = false;
         this.started = false;
 
+        //renders images and reports if there was an error
         try {
             this.startscreenImage = ImageIO.read(new File("src/resources/start-Screen.png"));
             this.backgroundImage = ImageIO.read(new File("src/resources/play-Screen.png"));
@@ -65,6 +69,7 @@ public class Game extends JLayeredPane implements KeyListener {
         setPreferredSize(screenSize);
     }
 
+    //loops to keep repainting the screen
     public void initGame() throws InterruptedException {
         generateImages();
 
@@ -85,6 +90,7 @@ public class Game extends JLayeredPane implements KeyListener {
     
     @Override
     public void paintComponent(Graphics g) {
+        //renders the images
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
@@ -93,7 +99,6 @@ public class Game extends JLayeredPane implements KeyListener {
         toolkit.sync();
 
         int offsetY = rocket.getY() - (int) PANEL_HEIGHT / 2;
-
         if (!guiHandler.getStarted()) {
             drawImage(
                 g2d, 
@@ -134,6 +139,7 @@ public class Game extends JLayeredPane implements KeyListener {
     }
 
     public void generateImages() {
+        //randomly adds images to screen
         int y = randomYPosition();
         boolean rightSide = rightSide();
 
@@ -151,28 +157,33 @@ public class Game extends JLayeredPane implements KeyListener {
     }
 
     public int randomXPosition() {
+        //returns random x value
         int MAX = PANEL_WIDTH * 1/3 - (int) (100 * scaleX);
         int MIN = 35;
         return (int) (Math.random() * (MAX - MIN)) + MIN;
     }
 
     public int randomYPosition() {
+        //returns random starting y value for images
         int MAX = 450;
         int MIN = 0;
         return (int) (Math.random() * (MAX - MIN)) + MIN;
     }
 
     public int randomYDistance() {
+        //returns random distance between images
         int MAX = 3000;
         int MIN = 2000;
         return (int) (Math.random() * (MAX - MIN)) + MIN;
     }
 
     public boolean rightSide() {
+        //returns a random boolean for what side to place the image
         return Math.random() * 100 > 50;
     }
 
     public BufferedImage randomImage() {
+        //bufferedImage array to hold all the images
         BufferedImage[] gameImages = {
             asteriodImage,
             constalationImage,
@@ -180,23 +191,26 @@ public class Game extends JLayeredPane implements KeyListener {
             planetImage
         };
 
+        //returns a random image from gameImages array
         return gameImages[(int) (Math.random() * gameImages.length)];
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
+        //checks if a key is pressed
         if (keyHeldDown || started || guiHandler.getUiPaused()) { return; }
 
         if (e.getKeyCode() == 27) {
             guiHandler.setUiState("exitScreen");       
             return;
         }
-
+        //launches the rocket and sets keyHeldDown to true
         rocket.setUpLaunch();
         keyHeldDown = true;
     }
 
     @Override
+    //sets keyHeldDown to false
     public void keyReleased(KeyEvent e) {
         keyHeldDown = false;
     }
@@ -205,7 +219,7 @@ public class Game extends JLayeredPane implements KeyListener {
     public void keyTyped(KeyEvent e) {
         return;
     }
-
+//draws the image selected previously
     private void drawImage(Graphics g, BufferedImage image, int x, int y, int width, int height) {
         g.drawImage(
             image,
@@ -218,16 +232,18 @@ public class Game extends JLayeredPane implements KeyListener {
     }
 
     private class GameImage {
-        
+        //initializes ints and images
         private final int x, y;
         private final BufferedImage image;
 
+        //sets ints and images
         public GameImage(int x, int y, BufferedImage image) {
             this.x = (int) (x * scaleX);
             this.y = (int) (y * scaleY);
             this.image = image;
         }
 
+        //draws image
         public void render(Graphics g, int offset) {
             g.drawImage(
                 image, 
