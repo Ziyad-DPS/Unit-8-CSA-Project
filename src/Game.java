@@ -15,7 +15,7 @@ public class Game extends JLayeredPane implements KeyListener {
 
     // Custom graphics website using JFrame https://www3.ntu.edu.sg/home/ehchua/programming/java/J4b_CustomGraphics.html
     //creates vars and objects to be used later
-    private int PANEL_WIDTH, PANEL_HEIGHT;
+    private int PANEL_WIDTH, PANEL_HEIGHT, MOON_DISTANCE;
     private double scaleX, scaleY;
     
     private GuiHandler guiHandler;
@@ -33,6 +33,7 @@ public class Game extends JLayeredPane implements KeyListener {
 
         this.PANEL_WIDTH = (int) screenSize.getWidth();
         this.PANEL_HEIGHT = (int) screenSize.getHeight();
+        this.MOON_DISTANCE = -15000; // Experimental set to change
 
         this.scaleX = (double) PANEL_WIDTH / 2560;
         this.scaleY = (double) PANEL_HEIGHT / 1600;
@@ -111,6 +112,9 @@ public class Game extends JLayeredPane implements KeyListener {
         } else {
             int planetOffset = -offsetY - (int) (120 * scaleY);
             int padding = (int) (100 * scaleX);
+            int moonWidth = 912;
+            int moonHeight = 780;
+            int moonPosition = (int) (PANEL_WIDTH / 2 - moonWidth / 2 * scaleX);
 
             drawImage(
                 g2d, 
@@ -128,6 +132,14 @@ public class Game extends JLayeredPane implements KeyListener {
                 PANEL_WIDTH + padding,
                 PANEL_HEIGHT + (int) (240 * scaleY)
             );
+            drawImage(
+                g2d,
+                moonImage,
+                moonPosition,
+                MOON_DISTANCE - offsetY,
+                (int) (moonWidth * scaleX), 
+                (int) (moonHeight * scaleY)
+            );
         }
 
         if (guiHandler.getStarted()) {
@@ -139,7 +151,7 @@ public class Game extends JLayeredPane implements KeyListener {
     }
 
     public void generateImages() {
-        //randomly adds images to screen
+        //randomly adds images to screens
         int y = randomYPosition();
         boolean rightSide = rightSide();
 

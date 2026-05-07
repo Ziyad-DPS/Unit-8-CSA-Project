@@ -9,7 +9,6 @@ public class Player {
     private int durLevel;
     private int powLevel;
     private int fuelLevel;
-    private int[] distance = {500, 1500, 5000, 12000, 25000, 50000, 90000, 140000, 195000, 239000};
 
 //sets variables to specific values
     public Player() {
@@ -72,18 +71,6 @@ public class Player {
         }
     }
 
-    //Checks what the lowest upgrade level is before returning the corresponding number found in the distance array
-    public int getDistance(){
-        if(powLevel<fuelLevel&&powLevel<durLevel){
-            return distance[powLevel];
-        }else if(fuelLevel<powLevel&&fuelLevel<durLevel){
-        return distance[fuelLevel];
-        }else if(durLevel<powLevel&&durLevel<fuelLevel){
-            return distance[durLevel];
-        }else{
-            return -1;
-        }
-    }
 
     //increases spacebucks based on the distance the player travels
     public void distanceToSpaceBucks(int distance){
