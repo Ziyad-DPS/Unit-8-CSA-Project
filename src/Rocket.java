@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Rocket {
     
@@ -76,6 +77,8 @@ public class Rocket {
             }
         }
 
+        removeNullParticles();
+
         if (particles.size() < MAX_PARTICLES) {
             addParticles();
         }
@@ -96,6 +99,8 @@ public class Rocket {
     }
     
     public void render(Graphics g) {
+        removeNullParticles();
+
         g.drawImage(
             image,
             IMAGE_X,
@@ -106,7 +111,9 @@ public class Rocket {
         );
 
         for (Particle particle : particles) {
-            particle.render(g);
+            if (particle != null) {
+                particle.render(g);
+            }
         }
     }
 
@@ -160,8 +167,18 @@ public class Rocket {
 
     public void updateParticles() {
         for (Particle particle : particles) {
-            particle.update();
-            particle.collisionDetection();
+            if (particle != null) {
+                particle.update();
+            }
+        }
+    }
+
+    public void removeNullParticles() {
+        for (int i = 0; i < particles.size(); i++) {
+            if (particles.get(i) == null) {
+                particles.remove(i);
+                i--;
+            }
         }
     }
 
@@ -180,7 +197,7 @@ public class Rocket {
 
     private class Particle {
 
-        private int x, y, xVelocity, yVelocity;
+        private int x, y, xVelocity, yVelocity, opacity;
         private final int size, index;
         private final int TOP, BOTTOM, GROUND;
 
@@ -191,6 +208,7 @@ public class Rocket {
             this.yVelocity = yVelocity;
             this.size = (int) (randomSize() * scaleX);
             this.index = index;
+            this.opacity = 255;
 
             this.TOP = (int) (-400 * scaleY);
             this.BOTTOM = (int) (PANEL_HEIGHT + 400 * scaleY);
@@ -200,7 +218,7 @@ public class Rocket {
         public void render(Graphics g) {
             int offset = getY() - (int) PANEL_HEIGHT / 2;
 
-            g.setColor(Color.red);
+            g.setColor(new Color(255, 255, 255, opacity));
             g.fillOval(
                 x,
                 y - offset,
@@ -212,6 +230,8 @@ public class Rocket {
         public void update() {
             x += xVelocity;
             y += yVelocity;
+            updateOpacity();
+            collisionDetection();
         }
 
         public void collisionDetection() {
@@ -220,13 +240,18 @@ public class Rocket {
             }
 
             if (y > BOTTOM || y < TOP) { 
-                particles.remove(index);
+                particles.set(index, null);
             }
 
             if (x < 0 || x > PANEL_WIDTH) {
-                particles.remove(index);
+                particles.set(index, null);
             }
 
+        }
+
+        private void updateOpacity() {
+            if (opacity <= 1) { opacity = 1; }
+            opacity -= 1;
         }
 
         private int randomSize() {
