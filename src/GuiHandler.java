@@ -46,11 +46,12 @@ public class GuiHandler extends JPanel implements Runnable {
         boolean running = true;
         while (running) {
             repaint();
+            constantUpdates();
             startScreen();
             renderPlayableGame();
-            displayDistance();
             upgradeScreen();
             exitScreen();
+            winScreen();
             setOpaque(false);
 
             try {
@@ -345,7 +346,34 @@ public class GuiHandler extends JPanel implements Runnable {
         return card;
     }
     
-    public void displayDistance() {
+    public void winScreen() {
+        if (!uiState.equals("winScreen")) {
+            return;
+        }
+
+        int width = (int) (1000 * uiScaleX);
+        int height = (int) (400 * uiScaleY);
+
+        JLabel winLabel = new JLabel("You WIN!!!!!", JLabel.CENTER);
+        winLabel.setBounds(
+            PANEL_WIDTH / 2 - width / 2,
+            PANEL_HEIGHT / 2 - height / 2,
+            width,
+            height
+        );
+        winLabel.setFont(new Font("Arial", Font.BOLD, 128));
+        winLabel.setForeground(BUTTON_COLOR);
+
+        add(winLabel);
+        uiState = "rendered";
+    }
+
+    public void constantUpdates() {
+        if (rocket.getGameWon()) {
+            uiState = "winScreen";
+            uiPaused = true;
+        }
+
         for (Component c : getComponents()) {
             if (c instanceof JLabel) {
                 JLabel d = (JLabel) c;

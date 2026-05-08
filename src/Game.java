@@ -33,7 +33,7 @@ public class Game extends JLayeredPane implements KeyListener {
 
         this.PANEL_WIDTH = (int) screenSize.getWidth();
         this.PANEL_HEIGHT = (int) screenSize.getHeight();
-        this.MOON_DISTANCE = -15000; // Experimental set to change
+        this.MOON_DISTANCE = -5000; // Experimental set to change
 
         this.scaleX = (double) PANEL_WIDTH / 2560;
         this.scaleY = (double) PANEL_HEIGHT / 1600;

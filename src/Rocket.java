@@ -11,7 +11,7 @@ public class Rocket {
     private final double DISTANCE_TO_MOON, TERMINAL_VELOCITY, FUEL_CONSUMPTION, GRAVITY, GROUND;
     private final int IMAGE_WIDTH, PANEL_WIDTH, PANEL_HEIGHT;
     private BufferedImage image;
-    private boolean setUp, runComplete, timer;
+    private boolean setUp, runComplete, timer, gameWon;
     private Player player;
 
     public Rocket(Player player) {
@@ -27,6 +27,7 @@ public class Rocket {
         this.timer = false;
         this.setUp = false;
         this.runComplete = false;
+        this.gameWon = false;
         this.player = player;
 
         // Find the rocket image and deal with IOerror handling
@@ -49,7 +50,7 @@ public class Rocket {
         this.scaleY = (double) PANEL_HEIGHT / 1600;
         
         // Create constants
-        this.DISTANCE_TO_MOON = 20000;
+        this.DISTANCE_TO_MOON = -5000;
         this.TERMINAL_VELOCITY = 40;
         this.GRAVITY = 1.24;
         this.FUEL_CONSUMPTION = 0.2;
@@ -90,7 +91,7 @@ public class Rocket {
     // Update yVelocity based off of fuelCapacity and use the easing function
     public void updateVelocity() {
         // Base conditions 
-        if (fuelCapacity < 0 || !setUp) { return; }
+        if (fuelCapacity < 0 || !setUp || gameWon) { return; }
 
         /* 
             Acceleration gets a x value 
@@ -119,7 +120,7 @@ public class Rocket {
     // Checks if the rocket is falling
     private void rocketFalling() {
         // Base conditions
-        if (!setUp || runComplete) { return; }
+        if (!setUp || runComplete || gameWon) { return; }
         
         // If the rocket is falling then set the timer up
         // add spacebucks
@@ -148,6 +149,10 @@ public class Rocket {
         else if (yVelocity < TERMINAL_VELOCITY) {
             yVelocity += GRAVITY;
         }
+
+        else if (y <= DISTANCE_TO_MOON) {
+            gameWon = true;
+        }
     }
 
     // An easing function derived from https://easings.net/
@@ -172,6 +177,10 @@ public class Rocket {
     public int getDistance() {
         if (y > GROUND) { return 0; }
         return Math.abs((int) y - (int) GROUND);
+    }
+
+    public boolean getGameWon() {
+        return gameWon;
     }
 
     // Getter for x
