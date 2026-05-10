@@ -58,8 +58,7 @@ public class Rocket {
         this.IMAGE_X = (int) PANEL_WIDTH / 2 - (IMAGE_WIDTH / 2);
         this.IMAGE_Y = (int) PANEL_HEIGHT - IMAGE_WIDTH - (int) (85 * scaleY);
         this.GROUND = (int) PANEL_HEIGHT / 2 + (int) (image.getHeight() * scaleY);
-        this.MAX_PARTICLES = 40;
-        addParticles();
+        this.MAX_PARTICLES = 400;
     }
     
     public void update() {
@@ -85,16 +84,24 @@ public class Rocket {
         updateVelocity();
         updateParticles();
     }
-
+    
     public void updateVelocity() {
         if (fuelCapacity < 0 || !setUp) { return; }
-
+        
         acceleration = easingFunction(1 - (fuelCapacity / max_fuel)) * power;
         yVelocity -= acceleration;
         fuelCapacity -= FUEL_CONSUMPTION;
     }
     
     public void render(Graphics g) {
+        if (particles.size() < MAX_PARTICLES && !(!setUp || runComplete)) {
+            particles = addParticles();
+        }
+
+        for (Particle particle : particles) {
+            particle.render(g);
+        }
+
         g.drawImage(
             image,
             IMAGE_X,
@@ -103,16 +110,10 @@ public class Rocket {
             IMAGE_WIDTH,
             null
         );
-
-        particles = filterParticles();
-        
-        for (Particle particle : particles) {
-            particle.render(g);
-        }
     }
 
     private void rocketFalling() {
-        // if (!setUp || runComplete) { return; }
+        if (!setUp || runComplete) { return; }
         
         if (getDistance() - lastDistance <= -300) {
             player.distanceToSpaceBucks((int) lastDistance);
@@ -151,14 +152,39 @@ public class Rocket {
         timer = false;
     }
 
-    public void addParticles() {
-        if (!setUp || runComplete) { return; }
+    public ArrayList<Particle> addParticles() {
+        ArrayList<Particle> newParticles = particles;
 
-        for (int i = particles.size(); i < MAX_PARTICLES; i++) {
-            Particle particle = new Particle(IMAGE_X + (int) (200 * scaleX), (int) y, 0, i);
+        for (int i = newParticles.size(); i < MAX_PARTICLES; i++) {
+            Particle particle = new Particle(
+                IMAGE_X + (int) (200 * scaleX), 
+                IMAGE_Y + (int) (150 * scaleY), 
+                randomXVelocity(),
+                randomYVelocity()
+            );
             
-            particles.add(particle);
+            newParticles.add(particle);
         }
+
+        return newParticles;
+    }
+
+    public int randomXVelocity() {
+        int MIN = 1;
+        int MAX = 4;
+        int returnValue = (int) (Math.random() * (MAX - MIN)) + MIN;
+
+        if (Math.random() < 0.5) {
+            return -returnValue;
+        }
+
+        return returnValue;
+    }
+
+    public int randomYVelocity() {
+        int MIN = 8;
+        int MAX = 15;
+        return (int) (Math.random() * (MAX - MIN)) + MIN;
     }
 
     public void updateParticles() {
@@ -194,47 +220,61 @@ public class Rocket {
 
     private class Particle {
 
-        private int x, y, xVelocity, yVelocity, opacity;
-        private boolean isAlive;
+        private int opacity, offset;
+        private double x, y, xVelocity, yVelocity;
+        private boolean isAlive, touchedGround;
         private final int size;
         private final int TOP, BOTTOM, GROUND;
 
-        public Particle(int x, int y, int xVelocity, int yVelocity) {
+        public Particle(double x, double y, double xVelocity, double yVelocity) {
             this.x = x;
             this.y = y;
             this.xVelocity = xVelocity;
             this.yVelocity = yVelocity;
             this.size = (int) (randomSize() * scaleX);
+            this.offset = getDistance();
             this.opacity = 255;
             this.isAlive = true;
+            this.touchedGround = false;
 
             this.TOP = (int) (-400 * scaleY);
             this.BOTTOM = (int) (PANEL_HEIGHT + 400 * scaleY);
-            this.GROUND = PANEL_HEIGHT - (int) (70 * scaleY);
+            this.GROUND = offset + PANEL_HEIGHT - (int) (150 * scaleY);
         }
 
         public void render(Graphics g) {
-            int offset = getY() - (int) PANEL_HEIGHT / 2;
-
             g.setColor(new Color(255, 255, 255, opacity));
-            g.fillOval(
-                x,
-                y - offset,
-                size,
-                size
-            );
+            if (touchedGround) {
+                g.fillOval(
+                    (int) x,
+                    (int) (y + offset),
+                    size,
+                    size
+                );
+            } 
+            else {
+                g.fillOval(
+                    (int) x,
+                    (int) y,
+                    size,
+                    size
+                );
+            }
         }
 
         public void update() {
             x += xVelocity;
             y += yVelocity;
+            offset = getDistance();
             updateOpacity();
             collisionDetection();
         }
 
         public void collisionDetection() {
             if (y >= GROUND) {
-                yVelocity = -yVelocity;
+                yVelocity = yVelocity * -0.5;
+                xVelocity = xVelocity * 0.5;
+                touchedGround = true;
             }
 
             if (y > BOTTOM || y < TOP) { 
