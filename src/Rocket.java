@@ -59,6 +59,7 @@ public class Rocket {
         this.IMAGE_Y = (int) PANEL_HEIGHT - IMAGE_WIDTH - (int) (85 * scaleY);
         this.GROUND = (int) PANEL_HEIGHT / 2 + (int) (image.getHeight() * scaleY);
         this.MAX_PARTICLES = 40;
+        addParticles();
     }
     
     public void update() {
@@ -76,14 +77,9 @@ public class Rocket {
                 fuelCapacity = 0;
             }
         }
-
-        removeNullParticles();
-
-        if (particles.size() < MAX_PARTICLES) {
-            addParticles();
-        }
-
+        
         y += yVelocity;
+        particles = filterParticles();
         borderCheck();
         rocketFalling();
         updateVelocity();
@@ -99,8 +95,6 @@ public class Rocket {
     }
     
     public void render(Graphics g) {
-        removeNullParticles();
-
         g.drawImage(
             image,
             IMAGE_X,
@@ -110,15 +104,15 @@ public class Rocket {
             null
         );
 
+        particles = filterParticles();
+        
         for (Particle particle : particles) {
-            if (particle != null) {
-                particle.render(g);
-            }
+            particle.render(g);
         }
     }
 
     private void rocketFalling() {
-        if (!setUp || runComplete) { return; }
+        // if (!setUp || runComplete) { return; }
         
         if (getDistance() - lastDistance <= -300) {
             player.distanceToSpaceBucks((int) lastDistance);
@@ -158,8 +152,10 @@ public class Rocket {
     }
 
     public void addParticles() {
+        if (!setUp || runComplete) { return; }
+
         for (int i = particles.size(); i < MAX_PARTICLES; i++) {
-            Particle particle = new Particle(IMAGE_X + (int) (200 * scaleX), (int) y, 0, i, i);
+            Particle particle = new Particle(IMAGE_X + (int) (200 * scaleX), (int) y, 0, i);
             
             particles.add(particle);
         }
@@ -167,19 +163,20 @@ public class Rocket {
 
     public void updateParticles() {
         for (Particle particle : particles) {
-            if (particle != null) {
-                particle.update();
-            }
+            particle.update();
         }
     }
 
-    public void removeNullParticles() {
-        for (int i = 0; i < particles.size(); i++) {
-            if (particles.get(i) == null) {
-                particles.remove(i);
-                i--;
+    public ArrayList<Particle> filterParticles() {
+        ArrayList<Particle> aliveParticles = new ArrayList<Particle>();
+
+        for (Particle particle : particles) {
+            if (particle.getIsAlive()) {
+                aliveParticles.add(particle);
             }
         }
+
+        return aliveParticles;
     }
 
     public int getDistance() {
@@ -198,17 +195,18 @@ public class Rocket {
     private class Particle {
 
         private int x, y, xVelocity, yVelocity, opacity;
-        private final int size, index;
+        private boolean isAlive;
+        private final int size;
         private final int TOP, BOTTOM, GROUND;
 
-        public Particle(int x, int y, int xVelocity, int yVelocity, int index) {
+        public Particle(int x, int y, int xVelocity, int yVelocity) {
             this.x = x;
             this.y = y;
             this.xVelocity = xVelocity;
             this.yVelocity = yVelocity;
             this.size = (int) (randomSize() * scaleX);
-            this.index = index;
             this.opacity = 255;
+            this.isAlive = true;
 
             this.TOP = (int) (-400 * scaleY);
             this.BOTTOM = (int) (PANEL_HEIGHT + 400 * scaleY);
@@ -240,11 +238,11 @@ public class Rocket {
             }
 
             if (y > BOTTOM || y < TOP) { 
-                particles.set(index, null);
+                isAlive = false;
             }
 
             if (x < 0 || x > PANEL_WIDTH) {
-                particles.set(index, null);
+                isAlive = false;
             }
 
         }
@@ -258,6 +256,10 @@ public class Rocket {
             int MAX = 30;
             int MIN = 15;
             return (int) (Math.random() * (MAX - MIN)) + MIN;
+        }
+
+        public boolean getIsAlive() {
+            return isAlive;
         }
 
     }
