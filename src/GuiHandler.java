@@ -130,7 +130,7 @@ public class GuiHandler extends JPanel implements Runnable {
 
         durabilityBar.setBounds(
             PANEL_WIDTH - (int)(840 * uiScaleX),
-            (int)(PANEL_HEIGHT * 0.9 * uiScaleY),
+            (int) (PANEL_HEIGHT * 0.9),
             (int)(780 * uiScaleX),
             (int)(100 * uiScaleY)
         );
