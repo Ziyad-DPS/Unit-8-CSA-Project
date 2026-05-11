@@ -7,8 +7,8 @@ import javax.imageio.*;
 public class Rocket {
     
     private int time;
-    private double x, y, yVelocity, acceleration, fuelCapacity, power, max_fuel, lastDistance, scaleX, scaleY;
-    private final double DISTANCE_TO_MOON, TERMINAL_VELOCITY, FUEL_CONSUMPTION, GRAVITY, GROUND;
+    private double x, y, yVelocity, acceleration, fuelCapacity, power, max_fuel, durability, maxDurability, lastDistance, scaleX, scaleY;
+    private final double DISTANCE_TO_MOON, TERMINAL_VELOCITY, FUEL_CONSUMPTION, DURABILITY_CONSUMPTION, GRAVITY, GROUND;
     private final int IMAGE_WIDTH, PANEL_WIDTH, PANEL_HEIGHT;
     private BufferedImage image;
     private boolean setUp, runComplete, timer, gameWon;
@@ -23,6 +23,8 @@ public class Rocket {
         this.fuelCapacity = 0;
         this.max_fuel = 0;
         this.power = 0;
+        this.durability = 0;
+        this.maxDurability = 0;
         this.time = 0;
         this.timer = false;
         this.setUp = false;
@@ -37,23 +39,24 @@ public class Rocket {
         } catch (IOException error) {
             System.err.println(error);
         }
-
+        
         // Get a Dimension named screenSize
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
+        
         // Get the screen sizes
         this.PANEL_WIDTH = (int) screenSize.getWidth();
         this.PANEL_HEIGHT = (int) screenSize.getHeight();
-
+        
         // Used to resize things for different screen sizes
         this.scaleX = (double) PANEL_WIDTH / 2560;
         this.scaleY = (double) PANEL_HEIGHT / 1600;
         
         // Create constants
-        this.DISTANCE_TO_MOON = -5000;
+        this.DISTANCE_TO_MOON = -200000;
         this.TERMINAL_VELOCITY = 40;
         this.GRAVITY = 1.24;
         this.FUEL_CONSUMPTION = 0.2;
+        this.DURABILITY_CONSUMPTION = 0.08;
         this.IMAGE_WIDTH = (int) (400 * scaleX);
         this.GROUND = (int) PANEL_HEIGHT / 2 + (int) (image.getHeight() * scaleY);
     }
@@ -85,6 +88,7 @@ public class Rocket {
         // Collision detection, is rocket falling, and update yVelocity
         borderCheck();
         rocketFalling();
+        updateDurability();
         updateVelocity();
     }
 
@@ -103,6 +107,20 @@ public class Rocket {
         yVelocity -= acceleration;
         fuelCapacity -= FUEL_CONSUMPTION;
     }
+
+    private void updateDurability() {
+    if (!setUp || runComplete || gameWon) { return; }
+
+    if (y < GROUND) {
+        durability -= DURABILITY_CONSUMPTION;
+    }
+
+    if (durability <= 0) {
+        durability = 0;
+        runComplete = true;
+        timer = true;
+    }
+}
     
     // renders the rocket image
     public void render(Graphics g) {
@@ -150,7 +168,7 @@ public class Rocket {
             yVelocity += GRAVITY;
         }
 
-        else if (y <= DISTANCE_TO_MOON) {
+        else if (y <= DISTANCE_TO_MOON + (int) (150 * scaleY)) {
             gameWon = true;
         }
     }
@@ -166,7 +184,10 @@ public class Rocket {
         max_fuel = 95 + player.getFuelLevel() * 1.25;
         fuelCapacity = max_fuel;
 
-        power = 16 + player.getPowerLevel() * 0.4;
+        power = 16 + player.getPowerLevel() * 0.2;
+
+        maxDurability = 100 + player.getDurabilityLevel() * 15;
+        durability = maxDurability;
 
         lastDistance = 0;
         setUp = true;
@@ -191,6 +212,22 @@ public class Rocket {
     // Getter for y
     public int getY() {
         return (int) y;
+    }
+
+    public double getFuel() {
+        return fuelCapacity;
+    }
+
+    public double getMaxFuel() {
+        return max_fuel;
+    }
+
+    public double getDurability() {
+        return durability;
+    }
+
+    public double getMaxDurability() {
+        return maxDurability;
     }
 
 }

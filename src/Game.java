@@ -33,7 +33,7 @@ public class Game extends JLayeredPane implements KeyListener {
 
         this.PANEL_WIDTH = (int) screenSize.getWidth();
         this.PANEL_HEIGHT = (int) screenSize.getHeight();
-        this.MOON_DISTANCE = -5000; // Experimental set to change
+        this.MOON_DISTANCE = -200000; // Experimental set to change
 
         this.scaleX = (double) PANEL_WIDTH / 2560;
         this.scaleY = (double) PANEL_HEIGHT / 1600;
@@ -114,7 +114,7 @@ public class Game extends JLayeredPane implements KeyListener {
             int padding = (int) (100 * scaleX);
             int moonWidth = 912;
             int moonHeight = 780;
-            int moonPosition = (int) (PANEL_WIDTH / 2 - moonWidth / 2 * scaleX);
+            int moonPosition = (int) (PANEL_WIDTH / 2 - (moonWidth * scaleX) / 2);
 
             drawImage(
                 g2d, 
@@ -136,7 +136,7 @@ public class Game extends JLayeredPane implements KeyListener {
                 g2d,
                 moonImage,
                 moonPosition,
-                MOON_DISTANCE - offsetY,
+                MOON_DISTANCE - (int) (offsetY * scaleY),
                 (int) (moonWidth * scaleX), 
                 (int) (moonHeight * scaleY)
             );

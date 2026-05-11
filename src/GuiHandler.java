@@ -14,6 +14,7 @@ public class GuiHandler extends JPanel implements Runnable {
     private final double uiScaleX, uiScaleY;
     private Rocket rocket;
     private String uiState;
+    private JProgressBar durabilityBar;
     private boolean uiPaused, started;
     private final Color BUTTON_COLOR;
     private final Font BUTTON_FONT;
@@ -31,6 +32,7 @@ public class GuiHandler extends JPanel implements Runnable {
         this.uiScaleY = (double) PANEL_HEIGHT / 1600;
         this.rocket = null;
         this.player = null;
+        this.durabilityBar = null;
         this.uiState = "startScreen";
         this.uiPaused = true;
         this.started = false;
@@ -117,6 +119,22 @@ public class GuiHandler extends JPanel implements Runnable {
         money.setForeground(Color.WHITE);
         money.setName("moneyLabel");
 
+        durabilityBar = new JProgressBar(
+            0,
+            (int) rocket.getMaxDurability()
+        );
+
+        durabilityBar.setValue((int) rocket.getDurability());
+        durabilityBar.setString("Durability");
+        durabilityBar.setStringPainted(true);
+
+        durabilityBar.setBounds(
+            PANEL_WIDTH - (int)(840 * uiScaleX),
+            (int)(PANEL_HEIGHT * 0.9 * uiScaleY),
+            (int)(780 * uiScaleX),
+            (int)(100 * uiScaleY)
+        );
+
         JButton upgradeScreenButton = new JButton("Upgrades");
         upgradeScreenButton.setBackground(BUTTON_COLOR);
         upgradeScreenButton.setFont(BUTTON_FONT);
@@ -134,6 +152,7 @@ public class GuiHandler extends JPanel implements Runnable {
 
         add(upgradeScreenButton);
         add(money);
+        add(durabilityBar);
         add(label);
         uiState = "rendered";
     }
@@ -372,6 +391,11 @@ public class GuiHandler extends JPanel implements Runnable {
         if (rocket.getGameWon()) {
             uiState = "winScreen";
             uiPaused = true;
+        }
+
+        if (rocket != null && durabilityBar != null) {
+            durabilityBar.setMaximum((int) rocket.getMaxDurability());
+            durabilityBar.setValue((int) rocket.getDurability());
         }
 
         for (Component c : getComponents()) {

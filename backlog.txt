@@ -2,10 +2,11 @@ BACKLOG:
 
 IN PROGRESS:
 - [ ] simple vfx
-- [ ] space conditions
-- [ ] reaching the moon/win screen
+- [ ] space conditions(Durability)
 
 DONE:
+- [x] make a responsive layout
+- [x] reaching the moon/win screen
 - [x] upgrade screen
 - [x] upgrades (Durability, Power, Fuel Capacity)
 - [x] rocket models, backgrounds, moon model

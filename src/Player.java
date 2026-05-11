@@ -63,11 +63,11 @@ public class Player {
     //increases the price of upgrades depending on the type parameter
     public void increasePrice(int type){
         if(type==1){
-            durabilityPrice *= 1.6;
+            durabilityPrice *= 1.3;
         }else if(type==2){
-            powerPrice *= 1.6;
+            powerPrice *= 1.42;
         }else if(type==3){
-            fuelCapacityPrice *= 1.6;
+            fuelCapacityPrice *= 1.3;
         }
     }
 
